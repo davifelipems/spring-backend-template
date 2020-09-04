@@ -7,11 +7,7 @@ import javax.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class SingUpDTO{
-
-	@NotNull
-	@Size(min=2, max=30)
-	private String name;
+public class SingInDTO{
 	
 	@NotNull
 	@Email

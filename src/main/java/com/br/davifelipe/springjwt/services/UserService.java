@@ -38,4 +38,5 @@ public class UserService {
 		obj.setPassword(encoder.encode(obj.getPassword()));
 		return this.repo.save(obj);
 	}
+	
 }

@@ -1,13 +1,16 @@
 package com.br.davifelipe.springjwt.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.br.davifelipe.springjwt.model.User;
+import com.br.davifelipe.springjwt.model.Role;
 
-public interface UserRepository extends JpaRepository<User, Integer>{
-	
+@Repository
+public interface RoleRepository extends JpaRepository<Role, Integer>{
 	@Transactional(readOnly = true)
-	public User findByEmail(@Param("email") String email);
+	Optional<Role> findByName(@Param("name") String name);
 }

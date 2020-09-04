@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.br.davifelipe.springjwt.dto.SingUpDTO;
+import com.br.davifelipe.springjwt.model.Role;
 import com.br.davifelipe.springjwt.model.User;
+import com.br.davifelipe.springjwt.services.RoleService;
 import com.br.davifelipe.springjwt.services.UserService;
 
 @RestController
@@ -22,7 +24,10 @@ import com.br.davifelipe.springjwt.services.UserService;
 public class AuthResource {
 	
 	@Autowired
-	private UserService service;
+	private UserService serviceUser;
+	
+	@Autowired
+	private RoleService serviceRole;
 	
 	@PostMapping("/sing-up")
 	public ResponseEntity<Void> singUp(@Valid @RequestBody SingUpDTO dto){
@@ -30,7 +35,11 @@ public class AuthResource {
 		ModelMapper modelMapper = new ModelMapper();
 		User user = modelMapper.map(dto,User.class);
 		
-		user = this.service.insert(user);
+		Role roleUser = serviceRole.findOrInsertByName("ROLE_USER");
+		
+		user.addRole(roleUser);
+		user = this.serviceUser.insert(user);
+		
 		URI uri = ServletUriComponentsBuilder
 				  .fromCurrentContextPath().path("/{id}")
 				  .buildAndExpand(user.getId())
