@@ -14,7 +14,9 @@ public class ProductResoruce {
 	
 	@GetMapping("/test")
 	public Product test() {
-		Product mouse = new Product(1, "Mouse", new BigDecimal(4.50));
+		BigDecimal price = new BigDecimal(4.5);
+		Product mouse = new Product(1, "Mouse", price);
+		
 		return mouse;
 	}
 }
