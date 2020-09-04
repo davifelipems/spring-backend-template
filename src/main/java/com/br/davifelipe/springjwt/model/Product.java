@@ -22,6 +22,7 @@ import lombok.ToString;
 
 @Entity
 @Data
+@NoArgsConstructor
 @ToString(exclude="id")
 @EqualsAndHashCode(exclude={"name", "price","categories"})
 public class Product implements Serializable{
