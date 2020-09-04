@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.br.davifelipe.springjwt.dto.ProductDTO;
 import com.br.davifelipe.springjwt.model.Product;
 import com.br.davifelipe.springjwt.services.ProductService;
+import com.br.davifelipe.springjwt.services.exceptions.ObjectNotFoundException;
 
 @RestController
 @RequestMapping("/products")
@@ -29,6 +30,10 @@ public class ProductResoruce {
 		ModelMapper modelMapper = new ModelMapper();
 		
 		Product product = service.findByid(Integer.parseInt(id));
+		
+		if(product == null) {
+			throw new ObjectNotFoundException("Object Product not found! id "+id);
+		}
 		
 		ProductDTO productDTO = modelMapper.map(product,ProductDTO.class);
 		
