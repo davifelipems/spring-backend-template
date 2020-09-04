@@ -2,6 +2,8 @@ package com.br.davifelipe.springjwt.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +44,7 @@ public class CategoryResource {
 	}
 	
 	@PostMapping()
-	public ResponseEntity<Void> insert(@RequestBody CategoryDTO dto){
+	public ResponseEntity<Void> insert(@Valid @RequestBody CategoryDTO dto){
 		
 		ModelMapper modelMapper = new ModelMapper();
 		Category obj = modelMapper.map(dto,Category.class);
@@ -56,7 +58,8 @@ public class CategoryResource {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Void> update(@RequestBody CategoryDTO dto,
+	public ResponseEntity<Void> update(@Valid
+									   @RequestBody CategoryDTO dto,
 									   @PathVariable(value="id") Integer id){
 		
 		ModelMapper modelMapper = new ModelMapper();
