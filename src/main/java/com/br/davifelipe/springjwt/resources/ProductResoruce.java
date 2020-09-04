@@ -1,6 +1,8 @@
 package com.br.davifelipe.springjwt.resources;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +15,14 @@ import com.br.davifelipe.springjwt.model.Product;
 public class ProductResoruce {
 	
 	@GetMapping("/test")
-	public Product test() {
+	public List<Product> test() {
+		
 		BigDecimal price = new BigDecimal(4.5);
 		Product mouse = new Product(1, "Mouse", price);
 		
-		return mouse;
+		List<Product> lista = new ArrayList<Product>();
+		lista.add(mouse);
+		
+		return lista;
 	}
 }
