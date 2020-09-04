@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		PUBLIC_MATCHERS.add("/h2-console/**");
-		PUBLIC_MATCHERS_GET.add("/products/**");
+		PUBLIC_MATCHERS_GET.add("/product/**");
 		
 		String[] activeProfiles = env.getActiveProfiles();
 		

@@ -1,9 +1,5 @@
 package com.br.davifelipe.springjwt.resources;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +14,13 @@ import com.br.davifelipe.springjwt.services.ProductService;
 import com.br.davifelipe.springjwt.services.exceptions.ObjectNotFoundException;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/product")
 public class ProductResoruce {
 	
 	@Autowired
 	private ProductService service;
 	
-	@GetMapping("/find-by-id/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<?> findById(@PathVariable(value="id") String id) {
 		
 		ModelMapper modelMapper = new ModelMapper();
@@ -40,15 +36,4 @@ public class ProductResoruce {
 		return ResponseEntity.ok().body(productDTO);
 	}
 	
-	@GetMapping("/test")
-	public List<Product> test() {
-		
-		BigDecimal price = new BigDecimal(4.5);
-		Product mouse = new Product(1, "Mouse", price);
-		
-		List<Product> lista = new ArrayList<Product>();
-		lista.add(mouse);
-		
-		return lista;
-	}
 }
