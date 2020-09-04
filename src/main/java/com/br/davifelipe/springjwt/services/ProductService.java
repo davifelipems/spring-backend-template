@@ -14,6 +14,11 @@ public class ProductService {
 	@Autowired
 	private ProductRepository repo;
 	
+	/**
+	 * Find a Product object by id
+	 * @param Integer id of the object
+	 * @return object found or null if the object were not found
+	 * */
 	public Product findByid(Integer id) {
 		Optional<Product> obj = repo.findById(id);
 		return obj.orElse(null);
