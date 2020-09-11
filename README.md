@@ -1,13 +1,42 @@
-# Spring backend template
+# Spring boot backend template
 
-## Avaliable scripts
+## Config files (make it before run the application)
+#### make an copy from this files:
+> src/main/resources/application-example.properties
+> src/main/resources/application-dev-example.properties
+> src/test/resources/application-example.properties
 
-### `mvnw install`
-Install dependencies and create jar file on the target folder
+#### to this destinations files:
+> src/main/resources/application.properties
+> src/main/resources/application-dev.properties
+> src/test/resources/application.properties
 
-### `java -jar target/spring-jwt-backend-template-0.0.1-SNAPSHOT.jar`
+#### NOTICE: 
+The target files are ignored by git. So you can add sensitive information to these files
 
-Run the web application.
+## Run it!
+
+```
+mvnw spring-boot:run
+```
+
+## Test it!
+```
+mvnw test
+```
+
+## Distribut it!
+
+```
+mvnw install
+java -jar target/spring-jwt-backend-template-0.0.1-SNAPSHOT.jar
+```
+
+  - Install dependencies and create a jar file on the target folder.
+  - Run the web application from jar file that has been created.
+
+## Request examples
+
 Open [http://localhost:8080](http://localhost:8080)
 
 Sing up Example [POST]:
@@ -19,9 +48,10 @@ body:
     "password":"MyPassord"
 }`
 
-OBS: You can disable public url sing up changing auth.public-sing-up-url-enable parameter at the application-deve.properties file
+#### NOTICE:
+You can disable public url sing up changing auth.public-sing-up-url-enable parameter on the application-dev.properties file
 
-Sing in Example (Get JWT Token on the Headers Authorization) [POST]
+Login Example (Get JWT Token on the Headers Authorization) [POST]
 [http://localhost:8080/login](http://localhost:8080/login)
 Body
 `{
@@ -36,7 +66,3 @@ Headers
     "Authorization":"<Token recived on the previous request>",
     "Content-type":"application/json"
 }`
-
-### `mvnw test`
-
-Run the integrations tests.
