@@ -1,5 +1,6 @@
 package com.br.davifelipe.springjwt.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,8 +29,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(exclude="id")
 @EqualsAndHashCode(exclude={"name","email","password"})
-public class User {
+public class User implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

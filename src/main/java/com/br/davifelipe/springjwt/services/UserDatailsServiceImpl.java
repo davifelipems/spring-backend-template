@@ -1,5 +1,7 @@
 package com.br.davifelipe.springjwt.services;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +20,8 @@ public class UserDatailsServiceImpl implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = repositoryUser.findByEmail(username);
+		Optional<User> obj = repositoryUser.findByEmail(username);
+		User user = obj.orElse(null);
 		if(user == null) {
 			throw new UsernameNotFoundException("User not found: "+username);
 		}

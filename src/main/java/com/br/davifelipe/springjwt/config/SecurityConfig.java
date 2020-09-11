@@ -49,10 +49,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		PUBLIC_MATCHERS.add("/h2-console/**");
 		PUBLIC_MATCHERS_GET.add("/product/**");
+		PUBLIC_MATCHERS_POST.addAll(Arrays.asList(
+										"/auth/reset-password/**",
+										"/auth/forgot-password/**"
+									));
 		
 		String[] activeProfiles = env.getActiveProfiles();
 		
-		if (Arrays.asList(activeProfiles).contains("dev")) {
+		if (Arrays.asList(activeProfiles).contains("dev")
+		|| Arrays.asList(activeProfiles).contains("test")) {
 			//disable it only for h2-console on dev envioment
 			http.headers().frameOptions().disable();
 		}
