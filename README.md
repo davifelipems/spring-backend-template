@@ -3,13 +3,13 @@
 ## Config files (make it before run the application)
 #### make an copy from this files:
 > src/main/resources/application-example.properties
-src/main/resources/application-dev-example.properties
-src/test/resources/application-example.properties
+> src/main/resources/application-dev-example.properties
+> src/test/resources/application-example.properties
 
 #### to this destinations files:
 > src/main/resources/application.properties
-src/main/resources/application-dev.properties
-src/test/resources/application.properties
+> src/main/resources/application-dev.properties
+> src/test/resources/application.properties
 
 #### NOTICE: 
 The target files are ignored by git. So you can add sensitive information to these files
@@ -24,8 +24,6 @@ mvnw spring-boot:run
 ```
 mvnw test
 ```
-
-Run the application on defatult port http://localhost:8080
 
 ## Distribut it!
 
