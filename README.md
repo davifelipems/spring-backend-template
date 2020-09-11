@@ -1,14 +1,14 @@
 # Spring boot backend template
 
 ## Config files (make it before run the application)
-#### make an copy form this files:
+#### make an copy from this files:
 > src/main/resources/application-example.properties
 src/main/resources/application-dev-example.properties
 src/test/resources/application-example.properties
 
 #### to this destinations files:
-> src/main/resources/application-dev.properties
-src/main/resources/application.properties
+> src/main/resources/application.properties
+src/main/resources/application-dev.properties
 src/test/resources/application.properties
 
 #### NOTICE: 
