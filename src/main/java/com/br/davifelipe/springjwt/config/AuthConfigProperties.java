@@ -13,4 +13,5 @@ public class AuthConfigProperties {
     private boolean publicSingUpUrlEnable;
     private String jwtSecret;
     private Long jwtExpirationMiliseg;
+    private Long ResetPasswordTokenExpirationMiliseg;
 }

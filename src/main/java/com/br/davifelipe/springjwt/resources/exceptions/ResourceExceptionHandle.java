@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.br.davifelipe.springjwt.services.exceptions.ObjectNotFoundException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @ControllerAdvice
 public class ResourceExceptionHandle {
@@ -20,6 +21,14 @@ public class ResourceExceptionHandle {
 		StandardError err = new StandardError(HttpStatus.NOT_FOUND.value(), e.getMessage(), System.currentTimeMillis());
 		
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+	}
+	
+	@ExceptionHandler(JsonProcessingException.class)
+	public ResponseEntity<StandardError> JsonProcessing(JsonProcessingException e,
+			HttpServletRequest request){
+		StandardError err = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)

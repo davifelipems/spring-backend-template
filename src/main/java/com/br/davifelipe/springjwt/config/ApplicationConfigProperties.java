@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import lombok.Data;
 
 @Configuration
-@ConfigurationProperties(prefix = "auth")
+@ConfigurationProperties(prefix = "application")
 @Data
-public class ConfigProperties {
-    
-    private boolean publicSingUpUrlEnable;
- 
+public class ApplicationConfigProperties {
+	
+	String smtpSender;
+	String resetPasswordUrl;
 }

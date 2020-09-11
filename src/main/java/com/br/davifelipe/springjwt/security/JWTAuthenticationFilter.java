@@ -2,13 +2,13 @@ package com.br.davifelipe.springjwt.security;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.br.davifelipe.springjwt.config.JWTUtil;
+import com.br.davifelipe.springjwt.dto.MessageDTO;
 import com.br.davifelipe.springjwt.dto.SingInDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -67,18 +68,18 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         @Override
         public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
                 throws IOException, ServletException {
-            response.setStatus(401);
+        	ObjectMapper objectMapper = new ObjectMapper();
+        	
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json"); 
-            response.getWriter().append(json());
+            response.getWriter().append(
+            						objectMapper.writeValueAsString(
+            								new MessageDTO("Invalid email or password",
+            											   "Not authorized",
+            											   HttpStatus.UNAUTHORIZED.value())
+            								)
+            						);
         }
         
-        private String json() {
-            long date = new Date().getTime();
-            return "{\"timestamp\": " + date + ", "
-                + "\"status\": 401, "
-                + "\"error\": \"Not authorized\", "
-                + "\"message\": \"Invalid email or password\", "
-                + "\"path\": \"/login\"}";
-        }
     }
 }
