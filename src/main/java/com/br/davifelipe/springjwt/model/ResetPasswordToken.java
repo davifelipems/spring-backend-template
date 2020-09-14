@@ -40,13 +40,11 @@ public class ResetPasswordToken implements Serializable{
     private User user;
 	
 	public boolean isExpired(Long resetPasswordTokenExpirationMisiseg) {
-		return getTimeoutToken(resetPasswordTokenExpirationMisiseg).before(new Date());
-	}
-	
-	public Calendar getTimeoutToken(Long resetPasswordTokenExpirationMisiseg) {
 		Calendar timeout = Calendar.getInstance();
 		timeout.setTimeInMillis(this.createdDate.getTime() + resetPasswordTokenExpirationMisiseg);
-		return timeout;
+		Date dateTimeout = timeout.getTime();
+		return (dateTimeout.before(new Date()));
 	}
+	
 	
 }

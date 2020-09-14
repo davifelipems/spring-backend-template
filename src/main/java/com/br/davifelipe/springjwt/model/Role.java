@@ -11,9 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Data
+@ToString(exclude="id")
 public class Role implements Serializable{
  
 	private static final long serialVersionUID = 1L;

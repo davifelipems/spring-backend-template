@@ -16,6 +16,16 @@ public class ResetPasswordTokenService {
 	private ResetPasswordTokenRepository repo;
 	
 	/**
+	 * Find ResetPasswordToken by User e-mail
+	 * @param ResetPasswordToken id of the object
+	 * @return object found or null if the object were not found
+	 * */
+	public ResetPasswordToken findByEmail(String email) {
+		Optional<ResetPasswordToken> obj = this.repo.findByEmail(email);
+		return obj.orElse(null);
+	}
+	
+	/**
 	 * Find ResetPasswordToken by token
 	 * @param ResetPasswordToken id of the object
 	 * @return object found or null if the object were not found
