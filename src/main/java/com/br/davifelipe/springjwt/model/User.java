@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,8 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -39,8 +38,7 @@ public class User implements Serializable{
 	private String email;
 	private String password;
 	
-	@ManyToMany()
-	@LazyCollection(LazyCollectionOption.FALSE)
+	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable( 
         name = "USERS_ROLES", 
         joinColumns = @JoinColumn(

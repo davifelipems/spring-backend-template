@@ -3,6 +3,8 @@ package com.br.davifelipe.springjwt.resources;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -11,40 +13,28 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
 
 import com.br.davifelipe.springjwt.dto.CategoryDTO;
-import com.br.davifelipe.springjwt.dto.SingInDTO;
-import com.br.davifelipe.springjwt.dto.SingUpDTO;
-import com.br.davifelipe.springjwt.model.User;
 
 @TestPropertySource("file:src/test/resources/application.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(OrderAnnotation.class)
-class CaretoryResourceTest {
+class CategoryResourceTest extends AbstractApplicationTest{
 	
 	@LocalServerPort
 	private int port;
-	
-	private String token;
-	
-	private User userMock;
 	
 	private CategoryDTO categoryDTOMock;
 	
 	@BeforeAll
 	public void prepare() {
-		this.userMock = new User();
+		this.prepareParent();
+		
 		this.categoryDTOMock = new CategoryDTO();
-		
-		this.userMock.setEmail("test@test.com");
-		this.userMock.setName("User test");
-		this.userMock.setPassword("123456");
-		
 		this.categoryDTOMock.setName("Devices");
 	}
 	
@@ -52,46 +42,22 @@ class CaretoryResourceTest {
 	@DisplayName("Category not authorized [GET]")
 	@Order(1)
 	void notAutorized() {
-            given()
-			.contentType("application/json")
-			.port(port)
-			.when().get("/category/1")
-			.then().statusCode(403);
+         this.notAutorizedParent();
 	}
 	
 	@Test
 	@DisplayName("Sing Up [POST]")
 	@Order(2)
 	void singUp() {
-		
-		ModelMapper modelMapper = new ModelMapper();
-		SingUpDTO singUpDTO = modelMapper.map(this.userMock,SingUpDTO.class);
-		
-		given()
-		.contentType("application/json")
-		.body(singUpDTO)
-		.port(port)
-		.when().post("/auth/sing-up")
-		.then().statusCode(201);
-		
+		this.singUpParent();
 	}
 	
 	@Test
 	@DisplayName("Sing in -> Get Token [POST]")
 	@Order(3)
+	@Transactional
 	void getToken() {
-		
-		ModelMapper modelMapper = new ModelMapper();
-		SingInDTO singInDTO = modelMapper.map(this.userMock,SingInDTO.class);
-		
-		this.token =	given()
-						.contentType("application/json")
-						.body(singInDTO)
-						.port(port)
-						.when().post("/login")
-						.then().statusCode(200).extract().header("Authorization");
-		
-		
+		this.singInParent();
 	}
 	
 	private void categoryNotFound() {
