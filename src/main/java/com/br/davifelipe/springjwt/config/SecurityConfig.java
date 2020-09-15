@@ -23,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.br.davifelipe.springjwt.security.JWTAuthenticationFilter;
 import com.br.davifelipe.springjwt.security.JWTAuthorizationFilter;
+import com.br.davifelipe.springjwt.security.JWTUtil;
 
 @Configuration
 @EnableWebSecurity

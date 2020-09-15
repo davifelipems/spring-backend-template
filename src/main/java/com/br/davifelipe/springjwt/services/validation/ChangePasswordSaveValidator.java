@@ -6,16 +6,16 @@ import java.util.List;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import com.br.davifelipe.springjwt.dto.ChangePasswordDTO;
+import com.br.davifelipe.springjwt.dto.ResetPasswordDTO;
 import com.br.davifelipe.springjwt.resources.exceptions.FieldMessage;
 
-public class ChangePasswordSaveValidator implements ConstraintValidator<ChagePasswordSave, ChangePasswordDTO> {
+public class ChangePasswordSaveValidator implements ConstraintValidator<ChagePasswordSave, ResetPasswordDTO> {
 	@Override
 	public void initialize(ChagePasswordSave ann) {
 	}
 
 	@Override
-	public boolean isValid(ChangePasswordDTO objDto, ConstraintValidatorContext context) {
+	public boolean isValid(ResetPasswordDTO objDto, ConstraintValidatorContext context) {
 		List<FieldMessage> erros = new ArrayList<>();
 		
 		//Make custom validations here and add that in que erros list 

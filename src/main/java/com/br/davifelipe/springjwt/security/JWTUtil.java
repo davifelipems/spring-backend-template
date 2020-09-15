@@ -1,4 +1,4 @@
-package com.br.davifelipe.springjwt.config;
+package com.br.davifelipe.springjwt.security;
 
 import java.util.Date;
 

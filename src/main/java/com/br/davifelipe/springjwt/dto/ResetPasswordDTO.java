@@ -10,18 +10,18 @@ import lombok.Data;
 
 @Data
 @ChagePasswordSave
-public class ChangePasswordDTO {
+public class ResetPasswordDTO {
 	
 	@NotNull
 	@Size(min=10)
 	private String token;
 	
 	@NotNull
-	@Size(min=2)
+	@Size(min=6)
 	private String password;
 	
 	@NotNull
-	@Size(min=2)
+	@Size(min=6)
 	@JsonProperty("password_confirm")
 	private String passwordConfirm;
 	
