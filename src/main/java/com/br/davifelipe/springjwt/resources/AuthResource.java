@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.br.davifelipe.springjwt.dto.ChangePasswordDTO;
+import com.br.davifelipe.springjwt.dto.ResetPasswordDTO;
 import com.br.davifelipe.springjwt.dto.ForgotPasswordDTO;
 import com.br.davifelipe.springjwt.dto.MessageDTO;
 import com.br.davifelipe.springjwt.dto.SingUpDTO;
@@ -67,7 +67,7 @@ public class AuthResource {
 	}
 	
 	@PostMapping("/reset-password")
-	public ResponseEntity<?> findById(@Valid @RequestBody ChangePasswordDTO dto) {
+	public ResponseEntity<?> findById(@Valid @RequestBody ResetPasswordDTO dto) {
 		
 		ResetPasswordToken resetPasswordToken = serviceResetPassword.findByToken(dto.getToken());
 		if(resetPasswordToken == null) {
@@ -89,7 +89,7 @@ public class AuthResource {
 		resetPasswordToken.setToken(null);
 		serviceResetPassword.update(resetPasswordToken);
 		
-		return ResponseEntity.ok().body(new MessageDTO("Password has been changed", HttpStatus.OK.value()));
+		return ResponseEntity.ok().body(new MessageDTO("Password was changed", HttpStatus.OK.value()));
 	}
 	
 	@PostMapping("/forgot-password")

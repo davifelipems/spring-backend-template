@@ -16,7 +16,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.br.davifelipe.springjwt.config.JWTUtil;
 import com.br.davifelipe.springjwt.dto.MessageDTO;
 import com.br.davifelipe.springjwt.dto.SingInDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;

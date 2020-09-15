@@ -6,7 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 
-import com.br.davifelipe.springjwt.dto.ChangePasswordDTO;
+import com.br.davifelipe.springjwt.dto.ResetPasswordDTO;
 import com.br.davifelipe.springjwt.model.ResetPasswordToken;
 import com.br.davifelipe.springjwt.model.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,7 +38,7 @@ public abstract class AbstractEmailService implements EmailService {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		ModelMapper modelMapper = new ModelMapper();
-		ChangePasswordDTO dto = modelMapper.map(resetPasswordToken,ChangePasswordDTO.class);
+		ResetPasswordDTO dto = modelMapper.map(resetPasswordToken,ResetPasswordDTO.class);
 		
 		dto.setPassword("newPassword");
 		dto.setPasswordConfirm("newPassword");

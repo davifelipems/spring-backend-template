@@ -19,7 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import com.br.davifelipe.springjwt.dto.ChangePasswordDTO;
+import com.br.davifelipe.springjwt.dto.ResetPasswordDTO;
 import com.br.davifelipe.springjwt.dto.ForgotPasswordDTO;
 import com.br.davifelipe.springjwt.model.ResetPasswordToken;
 
@@ -33,7 +33,7 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 	
 	private ResetPasswordToken resetPasswordToken;
 	
-	private ChangePasswordDTO changePasswordDto;
+	private ResetPasswordDTO resetPasswordDto;
 	
 	private String usedResetPasswordToken;
 	
@@ -42,7 +42,7 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 	public void prepare() {
 		this.prepareParent();
 		
-		this.changePasswordDto = new ChangePasswordDTO();
+		this.resetPasswordDto = new ResetPasswordDTO();
 		this.forgotDTOMock = new ForgotPasswordDTO();
 	}
 	
@@ -112,13 +112,13 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 	@Order(5)
 	void resetPasswordInvalidPassword() {
 		
-		this.changePasswordDto.setPassword("newPassword");
-		this.changePasswordDto.setPasswordConfirm("newPasswordNotMatch");
-		this.changePasswordDto.setToken(this.usedResetPasswordToken);
+		this.resetPasswordDto.setPassword("newPassword");
+		this.resetPasswordDto.setPasswordConfirm("newPasswordNotMatch");
+		this.resetPasswordDto.setToken(this.usedResetPasswordToken);
 		
 		given()
 		.contentType("application/json")
-		.body(this.changePasswordDto)
+		.body(this.resetPasswordDto)
 		.port(port)
 		.when().post("/auth/reset-password")
 		.then().statusCode(400);
@@ -133,14 +133,37 @@ class ForgotPasswordResource extends AbstractApplicationTest{
         this.addDayToken(-1);
         
 		ModelMapper modelMapper = new ModelMapper();
-		this.changePasswordDto = modelMapper.map(this.resetPasswordToken,ChangePasswordDTO.class);
+		this.resetPasswordDto = modelMapper.map(this.resetPasswordToken,ResetPasswordDTO.class);
 		
-		this.changePasswordDto.setPassword("newPassword");
-		this.changePasswordDto.setPasswordConfirm("newPassword");
+		this.resetPasswordDto.setPassword("newPassword");
+		this.resetPasswordDto.setPasswordConfirm("newPassword");
 		
 		given()
 		.contentType("application/json")
-		.body(this.changePasswordDto)
+		.body(this.resetPasswordDto)
+		.port(port)
+		.when().post("/auth/reset-password")
+		.then().statusCode(400);
+	}
+	
+	@Test
+	@DisplayName("Reset invalid token [POST]")
+	@Order(7)
+	void resetInvalidToken() {
+		
+		//returns created date token to current day
+		this.addDayToken(1);
+		
+		ModelMapper modelMapper = new ModelMapper();
+		this.resetPasswordDto = modelMapper.map(this.resetPasswordToken,ResetPasswordDTO.class);
+		
+		this.resetPasswordDto.setPassword("newPassword");
+		this.resetPasswordDto.setPasswordConfirm("newPassword");
+		this.resetPasswordDto.setToken("invalidToken");
+		
+		given()
+		.contentType("application/json")
+		.body(this.resetPasswordDto)
 		.port(port)
 		.when().post("/auth/reset-password")
 		.then().statusCode(400);
@@ -148,20 +171,19 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 	
 	@Test
 	@DisplayName("Reset password Successfully [POST]")
-	@Order(7)
+	@Order(8)
 	void resetPasswordSuccessfully() {
 		
-		this.addDayToken(1);
 		
 		ModelMapper modelMapper = new ModelMapper();
-		this.changePasswordDto = modelMapper.map(this.resetPasswordToken,ChangePasswordDTO.class);
+		this.resetPasswordDto = modelMapper.map(this.resetPasswordToken,ResetPasswordDTO.class);
 		
-		this.changePasswordDto.setPassword("newPassword");
-		this.changePasswordDto.setPasswordConfirm("newPassword");
+		this.resetPasswordDto.setPassword("newPassword");
+		this.resetPasswordDto.setPasswordConfirm("newPassword");
 		
 		given()
 		.contentType("application/json")
-		.body(this.changePasswordDto)
+		.body(this.resetPasswordDto)
 		.port(port)
 		.when().post("/auth/reset-password")
 		.then().statusCode(200);
@@ -169,12 +191,12 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 	
 	@Test
 	@DisplayName("Checks token reuse exception [POST]")
-	@Order(8)
+	@Order(9)
 	void tokenReusedExceptionCheck() {
 		
 		given()
 		.contentType("application/json")
-		.body(this.changePasswordDto)
+		.body(this.resetPasswordDto)
 		.port(port)
 		.when().post("/auth/reset-password")
 		.then().statusCode(400);
@@ -182,7 +204,7 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 	
 	@Test
 	@DisplayName("Check if the new password works [POST]")
-	@Order(9)
+	@Order(10)
 	void newPasswordCheck() {
 		this.singInDTO.setPassword("newPassword");
 		this.singInParent();
