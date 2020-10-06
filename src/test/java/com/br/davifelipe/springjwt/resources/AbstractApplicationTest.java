@@ -59,12 +59,14 @@ abstract class AbstractApplicationTest {
 	/**
 	 * Checks security layer for unauthorized endponts
 	 * */
-	protected void notAutorizedParent() {
+	protected boolean notAutorizedParent() {
 		given()
 		.contentType("application/json")
 		.port(port)
 		.when().get("/category/1")
 		.then().statusCode(403);
+		
+		return true;
 	}
 	
 	/**

@@ -23,8 +23,8 @@ import lombok.ToString;
 @ToString(exclude="id")
 @EqualsAndHashCode(exclude={"token","createdDate"})
 public class ResetPasswordToken implements Serializable{
-	
-	private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = -2747634784133926811L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

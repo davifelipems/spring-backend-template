@@ -19,7 +19,7 @@ public class UserDatailsServiceImpl implements UserDetailsService {
 	private UserRepository repositoryUser;
 	
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username){
 		Optional<User> obj = repositoryUser.findByEmail(username);
 		User user = obj.orElse(null);
 		if(user == null) {

@@ -23,8 +23,8 @@ import lombok.ToString;
 @ToString(exclude="id")
 @EqualsAndHashCode(exclude={"name","products"})
 public class Category implements Serializable{
-	
-	private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = 9143704370489714126L;
 
 	public Category(Integer id, String name) {
 		super();

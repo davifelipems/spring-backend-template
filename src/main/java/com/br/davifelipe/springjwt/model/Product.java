@@ -24,7 +24,9 @@ import lombok.ToString;
 @ToString(exclude="id")
 @EqualsAndHashCode(exclude={"name", "price","categories"})
 public class Product implements Serializable{
-	
+
+	private static final long serialVersionUID = -2682643397686591231L;
+
 	public Product(Integer id, String name, BigDecimal price) {
 		super();
 		this.id = id;
@@ -32,8 +34,6 @@ public class Product implements Serializable{
 		this.price = price;
 	}
 
-	private static final long serialVersionUID = 1L;
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

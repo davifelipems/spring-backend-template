@@ -10,10 +10,7 @@ import com.br.davifelipe.springjwt.dto.CategoryDTO;
 import com.br.davifelipe.springjwt.resources.exceptions.FieldMessage;
 
 public class CategorySaveValidator implements ConstraintValidator<CategorySave, CategoryDTO> {
-	@Override
-	public void initialize(CategorySave ann) {
-	}
-
+	
 	@Override
 	public boolean isValid(CategoryDTO objDto, ConstraintValidatorContext context) {
 		List<FieldMessage> erros = new ArrayList<>();
