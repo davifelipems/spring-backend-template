@@ -19,10 +19,12 @@ import com.br.davifelipe.springjwt.dto.ResetPasswordDTO;
 import com.br.davifelipe.springjwt.dto.ForgotPasswordDTO;
 import com.br.davifelipe.springjwt.dto.MessageDTO;
 import com.br.davifelipe.springjwt.dto.SingUpDTO;
+import com.br.davifelipe.springjwt.model.Privilege;
 import com.br.davifelipe.springjwt.model.ResetPasswordToken;
 import com.br.davifelipe.springjwt.model.Role;
 import com.br.davifelipe.springjwt.model.User;
 import com.br.davifelipe.springjwt.services.EmailService;
+import com.br.davifelipe.springjwt.services.PrivilegeService;
 import com.br.davifelipe.springjwt.services.ResetPasswordTokenService;
 import com.br.davifelipe.springjwt.services.RoleService;
 import com.br.davifelipe.springjwt.services.UserService;
@@ -40,6 +42,9 @@ public class AuthResource {
 	private RoleService serviceRole;
 	
 	@Autowired
+	private PrivilegeService servicePrivilege;
+	
+	@Autowired
 	private ResetPasswordTokenService serviceResetPassword;
 	
 	@Autowired
@@ -55,8 +60,15 @@ public class AuthResource {
 		User user = modelMapper.map(dto,User.class);
 		
 		Role roleUser = serviceRole.findOrInsertByName("ROLE_USER");
+		Privilege caregoryRead = servicePrivilege.findOrInsertByName("CATEGORY_READ_PRIVILEGE");
+		Privilege caregoryWrite = servicePrivilege.findOrInsertByName("CATEGORY_WRITE_PRIVILEGE");
+		Privilege caregoryDelete = servicePrivilege.findOrInsertByName("CATEGORY_DELETE_PRIVILEGE");
 		
 		user.addRole(roleUser);
+		user.addPrivilege(caregoryRead);
+		user.addPrivilege(caregoryWrite);
+		user.addPrivilege(caregoryDelete);
+		
 		user = this.serviceUser.insert(user);
 		
 		URI uri = ServletUriComponentsBuilder
@@ -67,7 +79,7 @@ public class AuthResource {
 	}
 	
 	@PostMapping("/reset-password")
-	public ResponseEntity<?> findById(@Valid @RequestBody ResetPasswordDTO dto) {
+	public ResponseEntity<MessageDTO> findById(@Valid @RequestBody ResetPasswordDTO dto) {
 		
 		ResetPasswordToken resetPasswordToken = serviceResetPassword.findByToken(dto.getToken());
 		if(resetPasswordToken == null) {
@@ -93,7 +105,7 @@ public class AuthResource {
 	}
 	
 	@PostMapping("/forgot-password")
-	public ResponseEntity<?> findById(@Valid @RequestBody ForgotPasswordDTO dto) 
+	public ResponseEntity<MessageDTO> findById(@Valid @RequestBody ForgotPasswordDTO dto) 
 			throws JsonProcessingException {
 		
 		User userFound = serviceUser.findByEmail(dto.getEmail());

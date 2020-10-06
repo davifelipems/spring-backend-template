@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +31,8 @@ public class CategoryResource {
 	private CategoryService service;
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> findById(@PathVariable(value="id") Integer id) {
+	@PostAuthorize("hasAuthority('CATEGORY_READ_PRIVILEGE')")
+	public ResponseEntity<CategoryDTO> findById(@PathVariable(value="id") Integer id) {
 		
 		ModelMapper modelMapper = new ModelMapper();
 		Category category = service.findById(id);
@@ -44,6 +46,7 @@ public class CategoryResource {
 	}
 	
 	@PostMapping()
+	@PostAuthorize("hasAuthority('CATEGORY_WRITE_PRIVILEGE')")
 	public ResponseEntity<Void> insert(@Valid @RequestBody CategoryDTO dto){
 		
 		ModelMapper modelMapper = new ModelMapper();
@@ -58,6 +61,7 @@ public class CategoryResource {
 	}
 	
 	@PutMapping("/{id}")
+	@PostAuthorize("hasAuthority('CATEGORY_WRITE_PRIVILEGE')")
 	public ResponseEntity<Void> update(@Valid
 									   @RequestBody CategoryDTO dto,
 									   @PathVariable(value="id") Integer id){
@@ -65,11 +69,12 @@ public class CategoryResource {
 		ModelMapper modelMapper = new ModelMapper();
 		Category obj = modelMapper.map(dto,Category.class);
 		obj.setId(id);
-		obj = this.service.update(obj);
+		this.service.update(obj);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@DeleteMapping("/{id}")
+	@PostAuthorize("hasAuthority('CATEGORY_DELETE_PRIVILEGE')")
 	public ResponseEntity<Void> delete(@PathVariable(value="id") Integer id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();

@@ -1,6 +1,7 @@
 package com.br.davifelipe.springjwt.resources;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.transaction.Transactional;
@@ -31,7 +32,7 @@ class CategoryResourceTest extends AbstractApplicationTest{
 	private CategoryDTO categoryDTOMock;
 	
 	@BeforeAll
-	public void prepare() {
+	void prepare() {
 		this.prepareParent();
 		
 		this.categoryDTOMock = new CategoryDTO();
@@ -42,13 +43,15 @@ class CategoryResourceTest extends AbstractApplicationTest{
 	@DisplayName("Category not authorized [GET]")
 	@Order(1)
 	void notAutorized() {
-         this.notAutorizedParent();
+		assertThat(this.token).isBlank();
+		this.notAutorizedParent();
 	}
 	
 	@Test
 	@DisplayName("Sing Up [POST]")
 	@Order(2)
 	void singUp() {
+		assertThat(this.token).isBlank();
 		this.singUpParent();
 	}
 	
@@ -57,6 +60,7 @@ class CategoryResourceTest extends AbstractApplicationTest{
 	@Order(3)
 	@Transactional
 	void getToken() {
+		assertThat(this.token).isBlank();
 		this.singInParent();
 	}
 	
@@ -73,6 +77,7 @@ class CategoryResourceTest extends AbstractApplicationTest{
 	@DisplayName("Category no found [GET]")
 	@Order(4)
 	void notFoundCategory() {
+		assertThat(this.token).isNotBlank();
 		this.categoryNotFound();
 	}
 	
@@ -82,6 +87,7 @@ class CategoryResourceTest extends AbstractApplicationTest{
 	void insertCategory() {
 		
 		this.categoryDTOMock.setId(null);
+		assertThat(this.token).isNotBlank();
 		
 		String categorySavedUrl = given()
 								.header("Authorization", this.token)

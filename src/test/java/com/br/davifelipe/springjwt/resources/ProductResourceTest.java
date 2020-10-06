@@ -13,14 +13,16 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.TestPropertySource;
 
 import com.br.davifelipe.springjwt.dto.ProductDTO;
 import com.br.davifelipe.springjwt.model.Product;
 import com.br.davifelipe.springjwt.repositories.ProductRepository;
 
+@TestPropertySource("file:src/test/resources/application.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(Lifecycle.PER_CLASS)
-public class ProductResourceTest{
+class ProductResourceTest{
 	
 	@LocalServerPort
 	private int port;
@@ -31,7 +33,7 @@ public class ProductResourceTest{
 	private Product insertedProduct;
 	
 	@BeforeAll
-	public void prepare() {
+	void prepare() {
 		
 		this.insertedProduct = new Product();
 		this.insertedProduct.setName("Mouse");
@@ -41,7 +43,7 @@ public class ProductResourceTest{
 	
 	@Test
 	@DisplayName("Get product by ID")
-	public void getProductById() {
+	void getProductById() {
 		
 		ProductDTO productDTO = given()
 						  .contentType("application/json")

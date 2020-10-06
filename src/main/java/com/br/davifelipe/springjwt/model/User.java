@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,7 +29,8 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude={"name","email","password"})
 public class User implements Serializable{
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -6746994790280544901L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -45,15 +45,36 @@ public class User implements Serializable{
           name = "user_id", referencedColumnName = "id"), 
         inverseJoinColumns = @JoinColumn(
           name = "role_id", referencedColumnName = "id")) 
-    private List<Role> roles = new ArrayList<Role>();
+    private List<Role> roles = new ArrayList<>();
 	
-	public Collection<? extends GrantedAuthority> getAutorities() {
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "USERS_PRIVILAGES", 
+			joinColumns = @JoinColumn(
+					name = "user_id", referencedColumnName = "id"), 
+			inverseJoinColumns = @JoinColumn(
+					name = "privilege_id", referencedColumnName = "id")) 
+	private List<Privilege> privileges = new ArrayList<>();
+	
+	public Collection<GrantedAuthority> getAutorities() {
+		   	
+		List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Privilege privilege : this.privileges) {
+            authorities.add(new SimpleGrantedAuthority(privilege.getName()));
+        }
+        
+        for (Role role : this.roles) {
+        	authorities.add(new SimpleGrantedAuthority(role.getName()));
+        	for (Privilege privilege : role.getPrivileges()) {
+        		authorities.add(new SimpleGrantedAuthority(privilege.getName()));
+        	}
+        }
 		
-		Collection<? extends GrantedAuthority> authorities = this.getRoles()
-				 .stream()
-				 .map(r -> new SimpleGrantedAuthority(r.getName()))
-				 .collect(Collectors.toList());
 		return authorities;
+	}
+	
+	public void addPrivilege(Privilege privilage) {
+		this.privileges.add(privilage);
 	}
 	
 	public void addRole(Role role) {

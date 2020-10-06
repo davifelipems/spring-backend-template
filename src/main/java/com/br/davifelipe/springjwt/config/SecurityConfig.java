@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -27,11 +28,12 @@ import com.br.davifelipe.springjwt.security.JWTUtil;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	public static final List<String> PUBLIC_MATCHERS = new ArrayList<String>();
-	public static final List<String> PUBLIC_MATCHERS_GET = new ArrayList<String>();
-	public static final List<String> PUBLIC_MATCHERS_POST = new ArrayList<String>();
+	protected static final List<String> PUBLIC_MATCHERS = new ArrayList<>();
+	protected static final List<String> PUBLIC_MATCHERS_GET = new ArrayList<>();
+	protected static final List<String> PUBLIC_MATCHERS_POST = new ArrayList<>();
 	
 	@Autowired
 	JWTUtil jwtUtil;
@@ -57,8 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		String[] activeProfiles = env.getActiveProfiles();
 		
-		if (Arrays.asList(activeProfiles).contains("dev")
-		|| Arrays.asList(activeProfiles).contains("test")) {
+		if (Arrays.asList(activeProfiles).containsAll(Arrays.asList("dev", "test"))) {
 			//disable it only for h2-console on dev envioment
 			http.headers().frameOptions().disable();
 		}
