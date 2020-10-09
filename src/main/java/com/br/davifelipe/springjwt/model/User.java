@@ -49,7 +49,7 @@ public class User implements Serializable{
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
-			name = "USERS_PRIVILAGES", 
+			name = "USERS_PRIVILEGES", 
 			joinColumns = @JoinColumn(
 					name = "user_id", referencedColumnName = "id"), 
 			inverseJoinColumns = @JoinColumn(
@@ -74,10 +74,16 @@ public class User implements Serializable{
 	}
 	
 	public void addPrivilege(Privilege privilage) {
+		if(this.privileges == null) {
+			this.privileges = new ArrayList<>();
+		}
 		this.privileges.add(privilage);
 	}
 	
 	public void addRole(Role role) {
+		if(this.roles == null) {
+			this.roles = new ArrayList<>();
+		}
 		this.roles.add(role);
 	}
 }

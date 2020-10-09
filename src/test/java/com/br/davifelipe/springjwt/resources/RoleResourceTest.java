@@ -13,16 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.br.davifelipe.springjwt.dto.RoleDto;
+import com.br.davifelipe.springjwt.dto.RoleSaveDto;
 import com.br.davifelipe.springjwt.dto.SingInDTO;
-import com.br.davifelipe.springjwt.dto.SingUpDTO;
-import com.br.davifelipe.springjwt.dto.UserDTO;
 import com.br.davifelipe.springjwt.model.Privilege;
 import com.br.davifelipe.springjwt.model.Role;
 import com.br.davifelipe.springjwt.services.PrivilegeService;
 import com.br.davifelipe.springjwt.services.RoleService;
 import com.br.davifelipe.springjwt.util.ObjectMapperUtil;
 
-class UserResourceTest extends AbstractApplicationTest{
+class RoleResourceTest extends AbstractApplicationTest{
 	
 	@Autowired
 	RoleService serviceRole;
@@ -33,45 +33,51 @@ class UserResourceTest extends AbstractApplicationTest{
 	@Autowired
 	private BCryptPasswordEncoder encoder;
 	
-	private SingUpDTO singUpDTO;
+	private RoleDto roleDTO;
 	
-	private UserDTO userDTO;
+	private RoleSaveDto roleSaveDTO;
 	
 	@BeforeAll
 	void prepare() {
 		this.prepareParent();
+		this.roleDTO = new RoleDto();
+		this.roleSaveDTO = new RoleSaveDto();
 		
 		userMock.setName("User test");
 		userMock.setPassword(encoder.encode("123456"));
 		Role roleUser = serviceRole.findOrInsertByName("ROLE_USER");
-		Privilege caregoryRead = servicePrivilege.findOrInsertByName("USER_READ_PRIVILEGE");
-		Privilege caregoryWrite = servicePrivilege.findOrInsertByName("USER_WRITE_PRIVILEGE");
-		Privilege caregoryDelete = servicePrivilege.findOrInsertByName("USER_DELETE_PRIVILEGE");
+		Privilege roleRead = servicePrivilege.findOrInsertByName("ROLE_READ_PRIVILEGE");
+		Privilege roleWrite = servicePrivilege.findOrInsertByName("ROLE_WRITE_PRIVILEGE");
+		Privilege roleDelete = servicePrivilege.findOrInsertByName("ROLE_DELETE_PRIVILEGE");
+		
 		
 		userMock.addRole(roleUser);
-		userMock.addPrivilege(caregoryRead);
-		userMock.addPrivilege(caregoryWrite);
-		userMock.addPrivilege(caregoryDelete);
+		userMock.addPrivilege(roleRead);
+		userMock.addPrivilege(roleWrite);
+		userMock.addPrivilege(roleDelete);
 		
 		userMock =	repositoryUser.saveAndFlush(userMock);
 		
 		this.singInDTO = ObjectMapperUtil.map(this.userMock,SingInDTO.class);
-		this.singUpDTO = ObjectMapperUtil.map(this.userMock,SingUpDTO.class);
-		this.userDTO = ObjectMapperUtil.map(this.userMock,UserDTO.class);
-		
-		this.singUpDTO.setPassword("123456");
 		this.singInDTO.setPassword("123456");
+		
+		this.roleDTO.setName("ROLE_TEST");
+		this.roleSaveDTO.setName("ROLE_TEST");
+		this.roleSaveDTO.addPrivilege(roleDelete);
+		this.roleSaveDTO.addPrivilege(roleWrite);
+		this.roleSaveDTO.addPrivilege(roleRead);
+		
 	}
 	
 	@Test
-	@DisplayName("User not authorized [GET]")
+	@DisplayName("Role not authorized [GET]")
 	@Order(1)
 	void notAutorized() {
 		assertThat(this.token).isBlank();
 		given()
 		.contentType("application/json")
 		.port(port)
-		.when().get("/user/1")
+		.when().get("/role/1")
 		.then().statusCode(403);
 	}
 	
@@ -89,121 +95,119 @@ class UserResourceTest extends AbstractApplicationTest{
 				.then().statusCode(200).extract().header("Authorization");
 	}
 	
-	private void userNotFound(Integer id) {
+	private void roleNotFound(Integer id) {
 		given()
 		.header("Authorization", this.token)
 		.contentType("application/json")
 		.port(port)
-		.when().get("/user/"+id)
+		.when().get("/role/"+id)
 		.then().statusCode(404);
 	}
 	
 	@Test
-	@DisplayName("User not found [GET]")
+	@DisplayName("Role not found [GET]")
 	@Order(3)
-	void notFoundUser() {
+	void notFoundRole() {
 		assertThat(this.token).isNotBlank();
-		this.userNotFound(100);
+		this.roleNotFound(100);
 	}
 	
 	@Test
-	@DisplayName("User insert [POST]")
+	@DisplayName("Role insert [POST]")
 	@Order(4)
-	void insertUser() {
+	void insertRole() {
 		
 		assertThat(this.token).isNotBlank();
-		
-		this.singUpDTO.setEmail("test2@test.com");
 		
 		String userSavedUrl = given()
 								.header("Authorization", this.token)
 								.contentType("application/json")
-								.body(this.singUpDTO)
+								.body(this.roleSaveDTO)
 								.port(port)
-								.when().post("/user")
+								.when().post("/role")
 								.then().statusCode(201)
 								.extract().header("Location");
 		
 		String splitedUrl[] = userSavedUrl.split("/");
-		this.userDTO.setId(Integer.parseInt(splitedUrl[splitedUrl.length -1]));
+		this.roleDTO.setId(Integer.parseInt(splitedUrl[splitedUrl.length -1]));
 	}
 	
 	@Test
-	@DisplayName("User found [GET]")
+	@DisplayName("Role found [GET]")
 	@Order(5)
-	void foundUser() {
+	void foundRole() {
 		
-		UserDTO userDTORetrived =	given()
+		RoleDto userDTORetrived =	given()
 				.header("Authorization", this.token)
 				.contentType("application/json")
 				.port(port)
-				.when().get("/user/"+this.userDTO.getId())
+				.when().get("/role/"+this.roleDTO.getId())
 				.then().statusCode(200)
-				.extract().as(UserDTO.class);
+				.extract().as(RoleDto.class);
 		
-		assertEquals(this.singUpDTO.getName(), userDTORetrived.getName());
+		assertEquals(this.roleDTO.getName(), userDTORetrived.getName());
 	}
 	
 	@Test
-	@DisplayName("User update [PUT]")
+	@DisplayName("Role update [PUT]")
 	@Order(6)
-	void updateUser() {
+	void updateRole() {
 		
-		this.singUpDTO.setName("User Updated!");
+		this.roleDTO.setName("ROLE_TEST_UPDATED");
 		 given()
 		.header("Authorization", this.token)
 		.contentType("application/json")
-		.body(this.singUpDTO)
+		.body(this.roleDTO)
 		.port(port)
-		.when().put("/user/"+this.userDTO.getId())
+		.when().put("/role/"+this.roleDTO.getId())
 		.then().statusCode(204);
 	}
 	
 	@Test
-	@DisplayName("User check if it was updated [GET]")
+	@DisplayName("Role check if it was updated [GET]")
 	@Order(7)
-	void updateCheckUser() {
-		UserDTO userDTORetrived =	given()
+	void updateCheckRole() {
+		RoleDto roleDTORetrived =	given()
 									.header("Authorization", this.token)
 									.contentType("application/json")
 									.port(port)
-									.when().get("/user/"+this.userDTO.getId())
+									.when().get("/role/"+this.roleDTO.getId())
 									.then().statusCode(200)
-									.extract().as(UserDTO.class);
+									.extract().as(RoleDto.class);
 		
-		assertEquals(this.singUpDTO.getName(), userDTORetrived.getName());
+		assertEquals(this.roleDTO.getName(), roleDTORetrived.getName());
 	}
 	
 	@Test
-	@DisplayName("User delte [DELETE]")
+	@DisplayName("Role delte [DELETE]")
 	@Order(8)
-	void deleteUser() {
+	void deleteRole() {
 		
 		 given()
 		.header("Authorization", this.token)
 		.contentType("application/json")
 		.port(port)
-		.when().delete("/user/"+this.userDTO.getId())
+		.when().delete("/role/"+this.roleDTO.getId())
 		.then().statusCode(204);
 	}
-	
+
 	@Test
 	@DisplayName("User check if it was deleted [GET]")
 	@Order(9)
-	void delteCheckUser() {
-		this.userNotFound(this.userDTO.getId());
+	void delteCheckRole() {
+		this.roleNotFound(this.roleDTO.getId());
 	}
-	
+
 	@Test
-	@DisplayName("User list [GET]")
+	@DisplayName("Role list [GET]")
 	@Order(10)
-	void listUser() {
+	void listRole() {
 		
 		 given()
 		.header("Authorization", this.token)
 		.contentType("application/json")
 		.port(port)
-		.when().get("/user/page?email=test@test.com&name=test")
+		.when().get("/role/page?name=test")
 		.then().statusCode(200);
 		
 	}

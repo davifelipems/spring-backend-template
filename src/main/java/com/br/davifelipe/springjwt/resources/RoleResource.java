@@ -21,24 +21,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.br.davifelipe.springjwt.dto.SingUpDTO;
-import com.br.davifelipe.springjwt.dto.UserDTO;
+import com.br.davifelipe.springjwt.dto.RoleDto;
+import com.br.davifelipe.springjwt.dto.RoleSaveDto;
 import com.br.davifelipe.springjwt.model.Privilege;
 import com.br.davifelipe.springjwt.model.Role;
-import com.br.davifelipe.springjwt.model.User;
 import com.br.davifelipe.springjwt.services.PrivilegeService;
 import com.br.davifelipe.springjwt.services.RoleService;
-import com.br.davifelipe.springjwt.services.UserService;
 import com.br.davifelipe.springjwt.services.exceptions.ObjectNotFoundException;
 import com.br.davifelipe.springjwt.util.ObjectMapperUtil;
 import com.br.davifelipe.springjwt.util.UrlUtil;
 
 @RestController
-@RequestMapping("/user")
-public class UserResource {
-	
-	@Autowired
-	private UserService service;
+@RequestMapping("/role")
+public class RoleResource {
 	
 	@Autowired
 	RoleService serviceRole;
@@ -47,65 +42,55 @@ public class UserResource {
 	PrivilegeService servicePrivilege;
 	
 	@GetMapping(value="/page")
-	public ResponseEntity<Page<UserDTO>> findPage(
+	public ResponseEntity<Page<RoleDto>> findPage(
 			@RequestParam(value="name", defaultValue="") String name, 
-			@RequestParam(value="email", defaultValue="") String email, 
 			@RequestParam(value="page", defaultValue="0") Integer page, 
 			@RequestParam(value="linesPerPage", defaultValue="24") Integer linesPerPage, 
 			@RequestParam(value="orderBy", defaultValue="name") String orderBy, 
 			@RequestParam(value="direction", defaultValue="ASC") String direction) {
 		
-		Page<User> list = null;
+		Page<Role> list = null;
 		
-		if(!name.isEmpty() && !email.isEmpty()) {
-			list = service.findPageByNameAndEmail(UrlUtil.decodeParam(name),UrlUtil.decodeParam(email),page, linesPerPage, orderBy, direction);
-		}else if(!name.isEmpty()) {
-			list = service.findPageByName(UrlUtil.decodeParam(name),page, linesPerPage, orderBy, direction);
-		}else if(!email.isEmpty()) {
-			list = service.findPageByEmail(UrlUtil.decodeParam(email),page, linesPerPage, orderBy, direction);
+		if(!name.isEmpty()) {
+			list = serviceRole.findPageByName(UrlUtil.decodeParam(name),page, linesPerPage, orderBy, direction);
 		}else {
-			list = service.findPage(page, linesPerPage, orderBy, direction);
+			list = serviceRole.findPage(page, linesPerPage, orderBy, direction);
 		}
 		
-		Page<UserDTO> listDto = ObjectMapperUtil.mapAll(list, UserDTO.class);
+		Page<RoleDto> listDto = ObjectMapperUtil.mapAll(list, RoleDto.class);
 		
 		return ResponseEntity.ok().body(listDto);
 	}
 	
 	@GetMapping("/{id}")
-	@PostAuthorize("hasAuthority('USER_READ_PRIVILEGE')")
-	public ResponseEntity<UserDTO> findById(@PathVariable(value="id") Integer id) {
+	@PostAuthorize("hasAuthority('ROLE_READ_PRIVILEGE')")
+	public ResponseEntity<RoleDto> findById(@PathVariable(value="id") Integer id) {
 		
-		User user = service.findById(id);
+		Role role = serviceRole.findById(id);
 		
-		if(user == null) {
-			throw new ObjectNotFoundException("Object "+User.class.getName()+" not found! id "+id);
+		if(role == null) {
+			throw new ObjectNotFoundException("Object "+Role.class.getName()+" not found! id "+id);
 		}
 		
-		UserDTO userDTO = ObjectMapperUtil.map(user,UserDTO.class);
-		return ResponseEntity.ok().body(userDTO);
+		RoleDto roleDTO = ObjectMapperUtil.map(role,RoleDto.class);
+		return ResponseEntity.ok().body(roleDTO);
 	}
 	
 	@PostMapping()
-	@PostAuthorize("hasAuthority('USER_WRITE_PRIVILEGE')")
-	public ResponseEntity<Void> insert(@Valid @RequestBody SingUpDTO dto){
+	@PostAuthorize("hasAuthority('ROLE_WRITE_PRIVILEGE')")
+	public ResponseEntity<Void> insert(@Valid @RequestBody RoleSaveDto dto){
 		
-		User obj = ObjectMapperUtil.map(dto,User.class);
+		Role obj = ObjectMapperUtil.map(dto,Role.class);
 		
-		List<Role> rolesUser = new ArrayList<>();
 		List<Privilege> privilegesUser = new ArrayList<>();
-		
-		for (Role role : dto.getRoles()) {
-			rolesUser.add(serviceRole.findOrInsertByName(role.getName()));
-		}
 		
 		for (Privilege privilege : dto.getPrivileges()) {
 			privilegesUser.add(servicePrivilege.findOrInsertByName(privilege.getName()));
 		}
 		
-		obj.setRoles(rolesUser);
 		obj.setPrivileges(privilegesUser);
-		obj = this.service.insert(obj);
+		
+		obj = this.serviceRole.insert(obj);
 		URI uri = ServletUriComponentsBuilder
 				  .fromCurrentRequest().path("/{id}")
 				  .buildAndExpand(obj.getId())
@@ -114,41 +99,30 @@ public class UserResource {
 	}
 	
 	@PutMapping("/{id}")
-	@PostAuthorize("hasAuthority('USER_WRITE_PRIVILEGE')")
+	@PostAuthorize("hasAuthority('ROLE_WRITE_PRIVILEGE')")
 	public ResponseEntity<Void> update(@Valid
-									   @RequestBody SingUpDTO dto,
+									   @RequestBody RoleSaveDto dto,
 									   @PathVariable(value="id") Integer id){
 		
-		User obj = ObjectMapperUtil.map(dto,User.class);
+		Role obj = ObjectMapperUtil.map(dto,Role.class);
 		obj.setId(id);
 		
-		List<Role> rolesUser = new ArrayList<>();
 		List<Privilege> privilegesUser = new ArrayList<>();
-		
-		for (Role role : dto.getRoles()) {
-			rolesUser.add(serviceRole.findOrInsertByName(role.getName()));
-		}
 		
 		for (Privilege privilege : dto.getPrivileges()) {
 			privilegesUser.add(servicePrivilege.findOrInsertByName(privilege.getName()));
 		}
 		
-		if(!dto.getRoles().isEmpty()) {
-			obj.setRoles(rolesUser);
-		}
+		obj.setPrivileges(privilegesUser);
 		
-		if(!dto.getPrivileges().isEmpty()){
-			obj.setPrivileges(privilegesUser);
-		}
-		
-		this.service.update(obj);
+		this.serviceRole.update(obj);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@DeleteMapping("/{id}")
-	@PostAuthorize("hasAuthority('USER_DELETE_PRIVILEGE')")
+	@PostAuthorize("hasAuthority('ROLE_DELETE_PRIVILEGE')")
 	public ResponseEntity<Void> delete(@PathVariable(value="id") Integer id) {
-		service.delete(id);
+		serviceRole.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 }

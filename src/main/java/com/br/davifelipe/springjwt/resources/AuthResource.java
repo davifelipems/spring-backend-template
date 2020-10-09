@@ -4,7 +4,6 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -15,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.br.davifelipe.springjwt.dto.ResetPasswordDTO;
 import com.br.davifelipe.springjwt.dto.ForgotPasswordDTO;
 import com.br.davifelipe.springjwt.dto.MessageDTO;
+import com.br.davifelipe.springjwt.dto.ResetPasswordDTO;
 import com.br.davifelipe.springjwt.dto.SingUpDTO;
 import com.br.davifelipe.springjwt.model.Privilege;
 import com.br.davifelipe.springjwt.model.ResetPasswordToken;
@@ -29,6 +28,7 @@ import com.br.davifelipe.springjwt.services.ResetPasswordTokenService;
 import com.br.davifelipe.springjwt.services.RoleService;
 import com.br.davifelipe.springjwt.services.UserService;
 import com.br.davifelipe.springjwt.services.exceptions.ObjectNotFoundException;
+import com.br.davifelipe.springjwt.util.ObjectMapperUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController
@@ -56,8 +56,7 @@ public class AuthResource {
 	@PostMapping("/sing-up")
 	public ResponseEntity<Void> singUp(@Valid @RequestBody SingUpDTO dto){
 		
-		ModelMapper modelMapper = new ModelMapper();
-		User user = modelMapper.map(dto,User.class);
+		User user = ObjectMapperUtil.map(dto,User.class);
 		
 		Role roleUser = serviceRole.findOrInsertByName("ROLE_USER");
 		Privilege caregoryRead = servicePrivilege.findOrInsertByName("CATEGORY_READ_PRIVILEGE");
@@ -72,7 +71,7 @@ public class AuthResource {
 		user = this.serviceUser.insert(user);
 		
 		URI uri = ServletUriComponentsBuilder
-				  .fromCurrentContextPath().path("/{id}")
+				  .fromCurrentContextPath().path("user/{id}")
 				  .buildAndExpand(user.getId())
 				  .toUri();
 		return ResponseEntity.created(uri).build();

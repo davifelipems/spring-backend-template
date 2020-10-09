@@ -4,11 +4,10 @@ import static io.restassured.RestAssured.given;
 
 import javax.transaction.Transactional;
 
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.modelmapper.ModelMapper;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -23,6 +22,7 @@ import com.br.davifelipe.springjwt.repositories.RoleRepository;
 import com.br.davifelipe.springjwt.repositories.UserRepository;
 import com.br.davifelipe.springjwt.services.ResetPasswordTokenService;
 import com.br.davifelipe.springjwt.services.UserService;
+import com.br.davifelipe.springjwt.util.ObjectMapperUtil;
 
 @TestPropertySource("file:src/test/resources/application.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -69,8 +69,7 @@ abstract class AbstractApplicationTest {
 		this.userMock.setName("User test");
 		this.userMock.setPassword("123456");
 		
-		ModelMapper modelMapper = new ModelMapper();
-		this.singInDTO = modelMapper.map(this.userMock,SingInDTO.class);
+		this.singInDTO = ObjectMapperUtil.map(this.userMock,SingInDTO.class);
 		
 	}
 	
@@ -91,8 +90,8 @@ abstract class AbstractApplicationTest {
 	 * Checks sing up endpoint
 	 * */
 	protected void singUpParent() {
-		ModelMapper modelMapper = new ModelMapper();
-		SingUpDTO singUpDTO = modelMapper.map(this.userMock,SingUpDTO.class);
+		
+		SingUpDTO singUpDTO = ObjectMapperUtil.map(this.userMock,SingUpDTO.class);
 		
 		given()
 		.contentType("application/json")

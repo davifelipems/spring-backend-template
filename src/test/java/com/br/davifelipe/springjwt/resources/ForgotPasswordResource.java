@@ -1,6 +1,7 @@
 package com.br.davifelipe.springjwt.resources;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -11,11 +12,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import com.br.davifelipe.springjwt.dto.ForgotPasswordDTO;
 import com.br.davifelipe.springjwt.dto.ResetPasswordDTO;
 import com.br.davifelipe.springjwt.model.ResetPasswordToken;
+import com.br.davifelipe.springjwt.util.ObjectMapperUtil;
 
 class ForgotPasswordResource extends AbstractApplicationTest{
 	
@@ -40,6 +41,7 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 	@DisplayName("Sing Up [POST]")
 	@Order(1)
 	void singUp() {
+		assertThat(this.token).isBlank();
 		this.singUpParent();
 	}
 	
@@ -47,6 +49,7 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 	@DisplayName("Sing in current password [POST]")
 	@Order(2)
 	void singInCurrentPassword() {
+		assertThat(this.token).isBlank();
 		this.singInParent();
 	}
 	
@@ -122,8 +125,7 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 		//delay one day to simulate an expired token
         this.addDayToken(-1);
         
-		ModelMapper modelMapper = new ModelMapper();
-		this.resetPasswordDto = modelMapper.map(this.resetPasswordToken,ResetPasswordDTO.class);
+		this.resetPasswordDto = ObjectMapperUtil.map(this.resetPasswordToken,ResetPasswordDTO.class);
 		
 		this.resetPasswordDto.setPassword("newPassword");
 		this.resetPasswordDto.setPasswordConfirm("newPassword");
@@ -144,8 +146,7 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 		//returns created date token to current day
 		this.addDayToken(1);
 		
-		ModelMapper modelMapper = new ModelMapper();
-		this.resetPasswordDto = modelMapper.map(this.resetPasswordToken,ResetPasswordDTO.class);
+		this.resetPasswordDto = ObjectMapperUtil.map(this.resetPasswordToken,ResetPasswordDTO.class);
 		
 		this.resetPasswordDto.setPassword("newPassword");
 		this.resetPasswordDto.setPasswordConfirm("newPassword");
@@ -164,9 +165,7 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 	@Order(8)
 	void resetPasswordSuccessfully() {
 		
-		
-		ModelMapper modelMapper = new ModelMapper();
-		this.resetPasswordDto = modelMapper.map(this.resetPasswordToken,ResetPasswordDTO.class);
+		this.resetPasswordDto = ObjectMapperUtil.map(this.resetPasswordToken,ResetPasswordDTO.class);
 		
 		this.resetPasswordDto.setPassword("newPassword");
 		this.resetPasswordDto.setPasswordConfirm("newPassword");
@@ -196,6 +195,7 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 	@DisplayName("Check if the new password works [POST]")
 	@Order(10)
 	void newPasswordCheck() {
+		assertThat(this.token).isNotBlank();
 		this.singInDTO.setPassword("newPassword");
 		this.singInParent();
 	}

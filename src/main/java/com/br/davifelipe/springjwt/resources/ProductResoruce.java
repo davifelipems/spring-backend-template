@@ -1,6 +1,5 @@
 package com.br.davifelipe.springjwt.resources;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +11,7 @@ import com.br.davifelipe.springjwt.dto.ProductDTO;
 import com.br.davifelipe.springjwt.model.Product;
 import com.br.davifelipe.springjwt.services.ProductService;
 import com.br.davifelipe.springjwt.services.exceptions.ObjectNotFoundException;
+import com.br.davifelipe.springjwt.util.ObjectMapperUtil;
 
 @RestController
 @RequestMapping("/product")
@@ -23,15 +23,13 @@ public class ProductResoruce {
 	@GetMapping("/{id}")
 	public ResponseEntity<ProductDTO> findById(@PathVariable(value="id") String id) {
 		
-		ModelMapper modelMapper = new ModelMapper();
-		
 		Product product = service.findByid(Integer.parseInt(id));
 		
 		if(product == null) {
 			throw new ObjectNotFoundException("Object Product not found! id "+id);
 		}
 		
-		ProductDTO productDTO = modelMapper.map(product,ProductDTO.class);
+		ProductDTO productDTO = ObjectMapperUtil.map(product,ProductDTO.class);
 		
 		return ResponseEntity.ok().body(productDTO);
 	}
