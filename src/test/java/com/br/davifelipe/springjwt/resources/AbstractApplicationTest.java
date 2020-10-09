@@ -4,18 +4,30 @@ import static io.restassured.RestAssured.given;
 
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.TestPropertySource;
 
 import com.br.davifelipe.springjwt.dto.SingInDTO;
 import com.br.davifelipe.springjwt.dto.SingUpDTO;
 import com.br.davifelipe.springjwt.model.User;
+import com.br.davifelipe.springjwt.repositories.PrivilegeRepository;
 import com.br.davifelipe.springjwt.repositories.ResetPasswordTokenRepository;
+import com.br.davifelipe.springjwt.repositories.RoleRepository;
 import com.br.davifelipe.springjwt.repositories.UserRepository;
 import com.br.davifelipe.springjwt.services.ResetPasswordTokenService;
 import com.br.davifelipe.springjwt.services.UserService;
 
+@TestPropertySource("file:src/test/resources/application.properties")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(OrderAnnotation.class)
 abstract class AbstractApplicationTest {
 	
 	@LocalServerPort
@@ -29,6 +41,12 @@ abstract class AbstractApplicationTest {
 	
 	@Autowired
 	protected UserRepository repositoryUser;
+	
+	@Autowired
+	protected RoleRepository repositoryRole;
+	
+	@Autowired
+	protected PrivilegeRepository repositoryPrivilege;
 	
 	@Autowired
 	protected UserService serviceUser;
@@ -101,6 +119,8 @@ abstract class AbstractApplicationTest {
 	private void clearData() {
 		repositoryResetPasswordToken.deleteAll();
 		repositoryUser.deleteAll();
+		repositoryPrivilege.deleteAll();
+		repositoryRole.deleteAll();
 	}
 
 }

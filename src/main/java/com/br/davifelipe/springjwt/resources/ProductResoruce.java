@@ -21,7 +21,7 @@ public class ProductResoruce {
 	private ProductService service;
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> findById(@PathVariable(value="id") String id) {
+	public ResponseEntity<ProductDTO> findById(@PathVariable(value="id") String id) {
 		
 		ModelMapper modelMapper = new ModelMapper();
 		

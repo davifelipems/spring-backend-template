@@ -5,6 +5,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,33 @@ public class UserService {
 	
 	@Autowired
 	private UserRepository repo;
+	
+	/**
+	 * Paginate User
+	 * @param current page
+	 * @param lines per page
+	 * @param order by
+	 * @param direction 
+	 * */
+	public Page<User> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		return repo.findAll(pageRequest);
+	}
+	
+	public Page<User> findPageByName(String name,Integer page, Integer linesPerPage, String orderBy, String direction){
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		return repo.findByName(name, pageRequest);
+	}
+	
+	public Page<User> findPageByEmail(String email,Integer page, Integer linesPerPage, String orderBy, String direction){
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		return repo.findByEmail(email, pageRequest);
+	}
+	public Page<User> findPageByNameAndEmail(String name,String email,Integer page, Integer linesPerPage, String orderBy, String direction){
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		return repo.findByNameAndEmail(name,email, pageRequest);
+	}
+	
 	
 	/**
 	 * Find User by id
@@ -86,6 +116,17 @@ public class UserService {
 			resetPasswordService.insert(resetToken);
 		}
 		return resetToken;
+	}
+	
+	/**
+	 * Delete a user object by id
+	 * @param user id
+	 * */
+	public void delete(Integer id) {
+		if(this.findById(id) == null) {
+			throw new ObjectNotFoundException("Obeject "+User.class.getName()+" no found! ID "+id);
+		}
+		repo.deleteById(id);
 	}
 	
 }
