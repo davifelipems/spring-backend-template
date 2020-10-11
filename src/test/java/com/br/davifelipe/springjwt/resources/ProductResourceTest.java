@@ -8,24 +8,13 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.TestPropertySource;
 
 import com.br.davifelipe.springjwt.dto.ProductDTO;
 import com.br.davifelipe.springjwt.model.Product;
 import com.br.davifelipe.springjwt.repositories.ProductRepository;
 
-@TestPropertySource("file:src/test/resources/application.properties")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestInstance(Lifecycle.PER_CLASS)
-class ProductResourceTest{
-	
-	@LocalServerPort
-	private int port;
+class ProductResourceTest extends AbstractApplicationTest{
 	
 	@Autowired
 	private ProductRepository repositoryProduct;

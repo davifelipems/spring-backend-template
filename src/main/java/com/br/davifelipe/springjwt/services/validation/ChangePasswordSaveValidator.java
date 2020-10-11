@@ -10,10 +10,7 @@ import com.br.davifelipe.springjwt.dto.ResetPasswordDTO;
 import com.br.davifelipe.springjwt.resources.exceptions.FieldMessage;
 
 public class ChangePasswordSaveValidator implements ConstraintValidator<ChagePasswordSave, ResetPasswordDTO> {
-	@Override
-	public void initialize(ChagePasswordSave ann) {
-	}
-
+	
 	@Override
 	public boolean isValid(ResetPasswordDTO objDto, ConstraintValidatorContext context) {
 		List<FieldMessage> erros = new ArrayList<>();

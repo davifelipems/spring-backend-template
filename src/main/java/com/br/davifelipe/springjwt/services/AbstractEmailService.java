@@ -2,13 +2,13 @@ package com.br.davifelipe.springjwt.services;
 
 import java.util.Date;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 
 import com.br.davifelipe.springjwt.dto.ResetPasswordDTO;
 import com.br.davifelipe.springjwt.model.ResetPasswordToken;
 import com.br.davifelipe.springjwt.model.User;
+import com.br.davifelipe.springjwt.util.ObjectMapperUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,8 +37,8 @@ public abstract class AbstractEmailService implements EmailService {
 		sm.setSentDate(new Date(System.currentTimeMillis()));
 		
 		ObjectMapper objectMapper = new ObjectMapper();
-		ModelMapper modelMapper = new ModelMapper();
-		ResetPasswordDTO dto = modelMapper.map(resetPasswordToken,ResetPasswordDTO.class);
+		
+		ResetPasswordDTO dto = ObjectMapperUtil.map(resetPasswordToken,ResetPasswordDTO.class);
 		
 		dto.setPassword("newPassword");
 		dto.setPasswordConfirm("newPassword");

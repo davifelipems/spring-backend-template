@@ -59,8 +59,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		String[] activeProfiles = env.getActiveProfiles();
 		
-		if (Arrays.asList(activeProfiles).containsAll(Arrays.asList("dev", "test"))) {
-			//disable it only for h2-console on dev envioment
+		List<String> h2Profiles = Arrays.asList("dev", "test");
+		
+		if(Arrays.asList(activeProfiles).stream().anyMatch(h2Profiles::contains)) {
+			//disable it only for h2-console on dev environment
 			http.headers().frameOptions().disable();
 		}
 		
