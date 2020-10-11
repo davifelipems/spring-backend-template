@@ -12,7 +12,7 @@
 > src/test/resources/application.properties
 
 #### NOTICE: 
-The target files are ignored by git. So you can add sensitive information to these files
+The target files are ignored by git. So you can add sensitive information to these files. If you are using STS (Spring Tool Suite) download and install lombok https://projectlombok.org/download
 
 ## Run it!
 
@@ -50,7 +50,6 @@ body:
 
 #### NOTICE:
 You can disable public url sing up changing auth.public-sing-up-url-enable parameter on the application-dev.properties file
-If you are using STS (Spring Tool Suite) download and install lombok https://projectlombok.org/download
 
 Login Example (Get JWT Token on the Headers Authorization) [POST]
 [http://localhost:8080/login](http://localhost:8080/login)
