@@ -44,8 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
     private Environment env;
 	
-	@Value("${auth.public-sing-up-url-enable}")
-	private String publicSingUpUrlEnable;
+	@Value("${auth.public-sign-up-url-enable}")
+	private String publicSignupUrlEnable;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -66,8 +66,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			http.headers().frameOptions().disable();
 		}
 		
-		if("true".equals(this.publicSingUpUrlEnable)) {
-			PUBLIC_MATCHERS_POST.add("/auth/sing-up/**");
+		if("true".equals(this.publicSignupUrlEnable)) {
+			PUBLIC_MATCHERS_POST.add("/auth/sign-up/**");
 		}
 		
 		http.cors().and().csrf().disable();

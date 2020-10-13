@@ -17,7 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.br.davifelipe.springjwt.dto.ForgotPasswordDTO;
 import com.br.davifelipe.springjwt.dto.MessageDTO;
 import com.br.davifelipe.springjwt.dto.ResetPasswordDTO;
-import com.br.davifelipe.springjwt.dto.SingUpDTO;
+import com.br.davifelipe.springjwt.dto.SignUpDTO;
 import com.br.davifelipe.springjwt.model.Privilege;
 import com.br.davifelipe.springjwt.model.ResetPasswordToken;
 import com.br.davifelipe.springjwt.model.Role;
@@ -53,8 +53,8 @@ public class AuthResource {
 	@Value("${auth.reset-password-token-expiration-miliseg}")
 	private Long resetPasswordTokenExpirationMisiseg;
 	
-	@PostMapping("/sing-up")
-	public ResponseEntity<Void> singUp(@Valid @RequestBody SingUpDTO dto){
+	@PostMapping("/sign-up")
+	public ResponseEntity<Void> signup(@Valid @RequestBody SignUpDTO dto){
 		
 		User user = ObjectMapperUtil.map(dto,User.class);
 		

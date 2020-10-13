@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.br.davifelipe.springjwt.dto.SingUpDTO;
+import com.br.davifelipe.springjwt.dto.SignUpDTO;
 import com.br.davifelipe.springjwt.dto.UserDTO;
 import com.br.davifelipe.springjwt.model.Privilege;
 import com.br.davifelipe.springjwt.model.Role;
@@ -88,7 +88,7 @@ public class UserResource {
 	
 	@PostMapping()
 	@PostAuthorize("hasAuthority('USER_WRITE_PRIVILEGE')")
-	public ResponseEntity<Void> insert(@Valid @RequestBody SingUpDTO dto){
+	public ResponseEntity<Void> insert(@Valid @RequestBody SignUpDTO dto){
 		
 		User obj = ObjectMapperUtil.map(dto,User.class);
 		
@@ -116,7 +116,7 @@ public class UserResource {
 	@PutMapping("/{id}")
 	@PostAuthorize("hasAuthority('USER_WRITE_PRIVILEGE')")
 	public ResponseEntity<Void> update(@Valid
-									   @RequestBody SingUpDTO dto,
+									   @RequestBody SignUpDTO dto,
 									   @PathVariable(value="id") Integer id){
 		
 		User obj = ObjectMapperUtil.map(dto,User.class);

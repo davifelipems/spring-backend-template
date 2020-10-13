@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.br.davifelipe.springjwt.dto.RoleDto;
+import com.br.davifelipe.springjwt.dto.RoleDTO;
 import com.br.davifelipe.springjwt.dto.RoleSaveDto;
 import com.br.davifelipe.springjwt.dto.SingInDTO;
 import com.br.davifelipe.springjwt.model.Privilege;
@@ -33,14 +33,14 @@ class RoleResourceTest extends AbstractApplicationTest{
 	@Autowired
 	private BCryptPasswordEncoder encoder;
 	
-	private RoleDto roleDTO;
+	private RoleDTO roleDTO;
 	
 	private RoleSaveDto roleSaveDTO;
 	
 	@BeforeAll
 	void prepare() {
 		this.prepareParent();
-		this.roleDTO = new RoleDto();
+		this.roleDTO = new RoleDTO();
 		this.roleSaveDTO = new RoleSaveDto();
 		
 		userMock.setName("User test");
@@ -137,13 +137,13 @@ class RoleResourceTest extends AbstractApplicationTest{
 	@Order(5)
 	void foundRole() {
 		
-		RoleDto userDTORetrived =	given()
+		RoleDTO userDTORetrived =	given()
 				.header("Authorization", this.token)
 				.contentType("application/json")
 				.port(port)
 				.when().get("/role/"+this.roleDTO.getId())
 				.then().statusCode(200)
-				.extract().as(RoleDto.class);
+				.extract().as(RoleDTO.class);
 		
 		assertEquals(this.roleDTO.getName(), userDTORetrived.getName());
 	}
@@ -167,13 +167,13 @@ class RoleResourceTest extends AbstractApplicationTest{
 	@DisplayName("Role check if it was updated [GET]")
 	@Order(7)
 	void updateCheckRole() {
-		RoleDto roleDTORetrived =	given()
+		RoleDTO roleDTORetrived =	given()
 									.header("Authorization", this.token)
 									.contentType("application/json")
 									.port(port)
 									.when().get("/role/"+this.roleDTO.getId())
 									.then().statusCode(200)
-									.extract().as(RoleDto.class);
+									.extract().as(RoleDTO.class);
 		
 		assertEquals(this.roleDTO.getName(), roleDTORetrived.getName());
 	}

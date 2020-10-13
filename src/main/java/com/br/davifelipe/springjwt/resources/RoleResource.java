@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.br.davifelipe.springjwt.dto.RoleDto;
+import com.br.davifelipe.springjwt.dto.RoleDTO;
 import com.br.davifelipe.springjwt.dto.RoleSaveDto;
 import com.br.davifelipe.springjwt.model.Privilege;
 import com.br.davifelipe.springjwt.model.Role;
@@ -42,7 +42,7 @@ public class RoleResource {
 	PrivilegeService servicePrivilege;
 	
 	@GetMapping(value="/page")
-	public ResponseEntity<Page<RoleDto>> findPage(
+	public ResponseEntity<Page<RoleDTO>> findPage(
 			@RequestParam(value="name", defaultValue="") String name, 
 			@RequestParam(value="page", defaultValue="0") Integer page, 
 			@RequestParam(value="linesPerPage", defaultValue="24") Integer linesPerPage, 
@@ -57,14 +57,14 @@ public class RoleResource {
 			list = serviceRole.findPage(page, linesPerPage, orderBy, direction);
 		}
 		
-		Page<RoleDto> listDto = ObjectMapperUtil.mapAll(list, RoleDto.class);
+		Page<RoleDTO> listDto = ObjectMapperUtil.mapAll(list, RoleDTO.class);
 		
 		return ResponseEntity.ok().body(listDto);
 	}
 	
 	@GetMapping("/{id}")
 	@PostAuthorize("hasAuthority('ROLE_READ_PRIVILEGE')")
-	public ResponseEntity<RoleDto> findById(@PathVariable(value="id") Integer id) {
+	public ResponseEntity<RoleDTO> findById(@PathVariable(value="id") Integer id) {
 		
 		Role role = serviceRole.findById(id);
 		
@@ -72,7 +72,7 @@ public class RoleResource {
 			throw new ObjectNotFoundException("Object "+Role.class.getName()+" not found! id "+id);
 		}
 		
-		RoleDto roleDTO = ObjectMapperUtil.map(role,RoleDto.class);
+		RoleDTO roleDTO = ObjectMapperUtil.map(role,RoleDTO.class);
 		return ResponseEntity.ok().body(roleDTO);
 	}
 	

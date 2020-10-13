@@ -12,7 +12,7 @@ import com.br.davifelipe.springjwt.model.Role;
 import lombok.Data;
 
 @Data
-public class SingUpDTO{
+public class SignUpDTO{
 
 	@NotNull
 	@Size(min=2, max=30)
