@@ -40,7 +40,7 @@ java -jar target/spring-jwt-backend-template-0.0.1-SNAPSHOT.jar
 Open [http://localhost:8080](http://localhost:8080)
 
 Sing up Example [POST]:
-[http://localhost:8080/auth/sing-up](http://localhost:8080/auth/sing-up)
+[http://localhost:8080/auth/sign-up](http://localhost:8080/auth/sign-up)
 body:
 `{
     "name":"User name",
@@ -49,7 +49,7 @@ body:
 }`
 
 #### NOTICE:
-You can disable public url sing up changing auth.public-sing-up-url-enable parameter on the application-dev.properties file
+You can disable public url sing up changing auth.public-sign-up-url-enable parameter on the application-dev.properties file
 
 Login Example (Get JWT Token on the Headers Authorization) [POST]
 [http://localhost:8080/login](http://localhost:8080/login)

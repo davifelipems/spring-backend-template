@@ -14,7 +14,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
 
 import com.br.davifelipe.springjwt.dto.SingInDTO;
-import com.br.davifelipe.springjwt.dto.SingUpDTO;
+import com.br.davifelipe.springjwt.dto.SignUpDTO;
 import com.br.davifelipe.springjwt.model.User;
 import com.br.davifelipe.springjwt.repositories.PrivilegeRepository;
 import com.br.davifelipe.springjwt.repositories.ResetPasswordTokenRepository;
@@ -89,15 +89,15 @@ abstract class AbstractApplicationTest {
 	/**
 	 * Checks sing up endpoint
 	 * */
-	protected void singUpParent() {
+	protected void signupParent() {
 		
-		SingUpDTO singUpDTO = ObjectMapperUtil.map(this.userMock,SingUpDTO.class);
+		SignUpDTO signupDTO = ObjectMapperUtil.map(this.userMock,SignUpDTO.class);
 		
 		given()
 		.contentType("application/json")
-		.body(singUpDTO)
+		.body(signupDTO)
 		.port(port)
-		.when().post("/auth/sing-up")
+		.when().post("/auth/sign-up")
 		.then().statusCode(201);
 	}
 	

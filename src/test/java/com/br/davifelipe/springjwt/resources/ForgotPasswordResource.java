@@ -38,15 +38,15 @@ class ForgotPasswordResource extends AbstractApplicationTest{
 	}
 	
 	@Test
-	@DisplayName("Sing Up [POST]")
+	@DisplayName("Sign Up [POST]")
 	@Order(1)
-	void singUp() {
+	void signup() {
 		assertThat(this.token).isBlank();
-		this.singUpParent();
+		this.signupParent();
 	}
 	
 	@Test
-	@DisplayName("Sing in current password [POST]")
+	@DisplayName("Sign in current password [POST]")
 	@Order(2)
 	void singInCurrentPassword() {
 		assertThat(this.token).isBlank();

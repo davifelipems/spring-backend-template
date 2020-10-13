@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.br.davifelipe.springjwt.dto.SingInDTO;
-import com.br.davifelipe.springjwt.dto.SingUpDTO;
+import com.br.davifelipe.springjwt.dto.SignUpDTO;
 import com.br.davifelipe.springjwt.dto.UserDTO;
 import com.br.davifelipe.springjwt.model.Privilege;
 import com.br.davifelipe.springjwt.model.Role;
@@ -33,7 +33,7 @@ class UserResourceTest extends AbstractApplicationTest{
 	@Autowired
 	private BCryptPasswordEncoder encoder;
 	
-	private SingUpDTO singUpDTO;
+	private SignUpDTO signupDTO;
 	
 	private UserDTO userDTO;
 	
@@ -56,10 +56,10 @@ class UserResourceTest extends AbstractApplicationTest{
 		userMock =	repositoryUser.saveAndFlush(userMock);
 		
 		this.singInDTO = ObjectMapperUtil.map(this.userMock,SingInDTO.class);
-		this.singUpDTO = ObjectMapperUtil.map(this.userMock,SingUpDTO.class);
+		this.signupDTO = ObjectMapperUtil.map(this.userMock,SignUpDTO.class);
 		this.userDTO = ObjectMapperUtil.map(this.userMock,UserDTO.class);
 		
-		this.singUpDTO.setPassword("123456");
+		this.signupDTO.setPassword("123456");
 		this.singInDTO.setPassword("123456");
 	}
 	
@@ -76,7 +76,7 @@ class UserResourceTest extends AbstractApplicationTest{
 	}
 	
 	@Test
-	@DisplayName("Sing in -> Get Token [POST]")
+	@DisplayName("Sign in -> Get Token [POST]")
 	@Order(2)
 	@Transactional
 	void getToken() {
@@ -113,12 +113,12 @@ class UserResourceTest extends AbstractApplicationTest{
 		
 		assertThat(this.token).isNotBlank();
 		
-		this.singUpDTO.setEmail("test2@test.com");
+		this.signupDTO.setEmail("test2@test.com");
 		
 		String userSavedUrl = given()
 								.header("Authorization", this.token)
 								.contentType("application/json")
-								.body(this.singUpDTO)
+								.body(this.signupDTO)
 								.port(port)
 								.when().post("/user")
 								.then().statusCode(201)
@@ -141,7 +141,7 @@ class UserResourceTest extends AbstractApplicationTest{
 				.then().statusCode(200)
 				.extract().as(UserDTO.class);
 		
-		assertEquals(this.singUpDTO.getName(), userDTORetrived.getName());
+		assertEquals(this.signupDTO.getName(), userDTORetrived.getName());
 	}
 	
 	@Test
@@ -149,11 +149,11 @@ class UserResourceTest extends AbstractApplicationTest{
 	@Order(6)
 	void updateUser() {
 		
-		this.singUpDTO.setName("User Updated!");
+		this.signupDTO.setName("User Updated!");
 		 given()
 		.header("Authorization", this.token)
 		.contentType("application/json")
-		.body(this.singUpDTO)
+		.body(this.signupDTO)
 		.port(port)
 		.when().put("/user/"+this.userDTO.getId())
 		.then().statusCode(204);
@@ -171,7 +171,7 @@ class UserResourceTest extends AbstractApplicationTest{
 									.then().statusCode(200)
 									.extract().as(UserDTO.class);
 		
-		assertEquals(this.singUpDTO.getName(), userDTORetrived.getName());
+		assertEquals(this.signupDTO.getName(), userDTORetrived.getName());
 	}
 	
 	@Test

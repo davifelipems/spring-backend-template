@@ -38,15 +38,15 @@ class CategoryResourceTest extends AbstractApplicationTest{
 	}
 	
 	@Test
-	@DisplayName("Sing Up [POST]")
+	@DisplayName("Sign Up [POST]")
 	@Order(2)
-	void singUp() {
+	void signup() {
 		assertThat(this.token).isBlank();
-		this.singUpParent();
+		this.signupParent();
 	}
 	
 	@Test
-	@DisplayName("Sing in -> Get Token [POST]")
+	@DisplayName("Sign in -> Get Token [POST]")
 	@Order(3)
 	@Transactional
 	void getToken() {

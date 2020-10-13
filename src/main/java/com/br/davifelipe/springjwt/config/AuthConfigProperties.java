@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class AuthConfigProperties {
     
-    private boolean publicSingUpUrlEnable;
+    private boolean publicSignUpUrlEnable;
     private String jwtSecret;
     private Long jwtExpirationMiliseg;
     private Long resetPasswordTokenExpirationMiliseg;
