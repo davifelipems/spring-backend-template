@@ -8,12 +8,16 @@ import javax.validation.constraints.Size;
 
 import com.br.davifelipe.springjwt.model.Privilege;
 import com.br.davifelipe.springjwt.model.Role;
+import com.br.davifelipe.springjwt.services.validation.SignUpSave;
 
 import lombok.Data;
 
 @Data
+@SignUpSave
 public class SignUpDTO{
-
+	
+	private Integer id;
+	
 	@NotNull
 	@Size(min=2, max=30)
 	private String name;

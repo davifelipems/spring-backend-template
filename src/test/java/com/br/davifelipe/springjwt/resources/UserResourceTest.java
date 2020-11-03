@@ -126,6 +126,7 @@ class UserResourceTest extends AbstractApplicationTest{
 		
 		String splitedUrl[] = userSavedUrl.split("/");
 		this.userDTO.setId(Integer.parseInt(splitedUrl[splitedUrl.length -1]));
+		this.signupDTO.setId(this.userDTO.getId());
 	}
 	
 	@Test
