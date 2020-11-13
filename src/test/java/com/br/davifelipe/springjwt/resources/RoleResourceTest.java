@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.br.davifelipe.springjwt.dto.RoleDTO;
+import com.br.davifelipe.springjwt.dto.RoleDetailDTO;
 import com.br.davifelipe.springjwt.dto.RoleSaveDto;
 import com.br.davifelipe.springjwt.dto.SingInDTO;
 import com.br.davifelipe.springjwt.model.Privilege;
@@ -35,12 +36,15 @@ class RoleResourceTest extends AbstractApplicationTest{
 	
 	private RoleDTO roleDTO;
 	
+	private RoleDetailDTO roleDetailDTO;
+	
 	private RoleSaveDto roleSaveDTO;
 	
 	@BeforeAll
 	void prepare() {
 		this.prepareParent();
 		this.roleDTO = new RoleDTO();
+		this.roleDetailDTO = new RoleDetailDTO();
 		this.roleSaveDTO = new RoleSaveDto();
 		
 		userMock.setName("User test");
@@ -66,6 +70,8 @@ class RoleResourceTest extends AbstractApplicationTest{
 		this.roleSaveDTO.addPrivilege(roleDelete);
 		this.roleSaveDTO.addPrivilege(roleWrite);
 		this.roleSaveDTO.addPrivilege(roleRead);
+		
+		this.roleDetailDTO = ObjectMapperUtil.map(this.roleDTO,RoleDetailDTO.class);
 		
 	}
 	
@@ -137,15 +143,15 @@ class RoleResourceTest extends AbstractApplicationTest{
 	@Order(5)
 	void foundRole() {
 		
-		RoleDTO userDTORetrived =	given()
+		RoleDetailDTO userDTORetrived =	given()
 				.header("Authorization", this.token)
 				.contentType("application/json")
 				.port(port)
 				.when().get("/role/"+this.roleDTO.getId())
 				.then().statusCode(200)
-				.extract().as(RoleDTO.class);
+				.extract().as(RoleDetailDTO.class);
 		
-		assertEquals(this.roleDTO.getName(), userDTORetrived.getName());
+		assertEquals(this.roleDetailDTO.getName(), userDTORetrived.getName());
 	}
 	
 	@Test
@@ -154,6 +160,7 @@ class RoleResourceTest extends AbstractApplicationTest{
 	void updateRole() {
 		
 		this.roleDTO.setName("ROLE_TEST_UPDATED");
+		this.roleDetailDTO.setName(this.roleDTO.getName());
 		 given()
 		.header("Authorization", this.token)
 		.contentType("application/json")
@@ -167,15 +174,15 @@ class RoleResourceTest extends AbstractApplicationTest{
 	@DisplayName("Role check if it was updated [GET]")
 	@Order(7)
 	void updateCheckRole() {
-		RoleDTO roleDTORetrived =	given()
+		RoleDetailDTO roleDTORetrived =	given()
 									.header("Authorization", this.token)
 									.contentType("application/json")
 									.port(port)
 									.when().get("/role/"+this.roleDTO.getId())
 									.then().statusCode(200)
-									.extract().as(RoleDTO.class);
+									.extract().as(RoleDetailDTO.class);
 		
-		assertEquals(this.roleDTO.getName(), roleDTORetrived.getName());
+		assertEquals(this.roleDetailDTO.getName(), roleDTORetrived.getName());
 	}
 	
 	@Test

@@ -1,5 +1,6 @@
 package com.br.davifelipe.springjwt.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,5 +97,9 @@ public class RoleService {
 			throw new ObjectNotFoundException("Obeject "+Role.class.getName()+" no found! ID "+id);
 		}
 		repo.deleteById(id);
+	}
+	
+	public List<Role> findAll(){
+		return repo.findAll();
 	}
 }

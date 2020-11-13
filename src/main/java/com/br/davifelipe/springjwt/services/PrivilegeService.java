@@ -1,5 +1,6 @@
 package com.br.davifelipe.springjwt.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +50,9 @@ public class PrivilegeService {
 			this.repo.save(newObject);
 		}
 		return newObject;
+	}
+	
+	public List<Privilege> findAll(){
+		return repo.findAll();
 	}
 }

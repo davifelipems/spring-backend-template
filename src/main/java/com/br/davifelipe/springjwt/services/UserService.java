@@ -92,10 +92,15 @@ public class UserService {
 	 * @return User object updated 
 	 * */
 	public User update(User obj) {
-		if(this.findById(obj.getId()) == null) {
+		User userRetrived = this.findById(obj.getId());
+		if(userRetrived == null) {
 			throw new ObjectNotFoundException("Obeject "+User.class.getName()+" no found! ID "+obj.getId());
 		}
-		obj.setPassword(encoder.encode(obj.getPassword()));
+		if(obj.getPassword() != null && !obj.getPassword().isEmpty()) {
+			obj.setPassword(encoder.encode(obj.getPassword()));
+		}else {
+			obj.setPassword(userRetrived.getPassword());
+		}
 		return this.repo.save(obj);
 	}
 	

@@ -21,8 +21,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.br.davifelipe.springjwt.dto.PrivilegeDTO;
+import com.br.davifelipe.springjwt.dto.RoleDTO;
 import com.br.davifelipe.springjwt.dto.SignUpDTO;
+import com.br.davifelipe.springjwt.dto.UpdateUserDTO;
 import com.br.davifelipe.springjwt.dto.UserDTO;
+import com.br.davifelipe.springjwt.dto.UserDetailDTO;
 import com.br.davifelipe.springjwt.model.Privilege;
 import com.br.davifelipe.springjwt.model.Role;
 import com.br.davifelipe.springjwt.model.User;
@@ -47,6 +51,7 @@ public class UserResource {
 	PrivilegeService servicePrivilege;
 	
 	@GetMapping(value="/page")
+	@PostAuthorize("hasAuthority('USER_READ_PRIVILEGE')")
 	public ResponseEntity<Page<UserDTO>> findPage(
 			@RequestParam(value="name", defaultValue="") String name, 
 			@RequestParam(value="email", defaultValue="") String email, 
@@ -74,7 +79,7 @@ public class UserResource {
 	
 	@GetMapping("/{id}")
 	@PostAuthorize("hasAuthority('USER_READ_PRIVILEGE')")
-	public ResponseEntity<UserDTO> findById(@PathVariable(value="id") Integer id) {
+	public ResponseEntity<UserDetailDTO> findById(@PathVariable(value="id") Integer id) {
 		
 		User user = service.findById(id);
 		
@@ -82,8 +87,27 @@ public class UserResource {
 			throw new ObjectNotFoundException("Object "+User.class.getName()+" not found! id "+id);
 		}
 		
-		UserDTO userDTO = ObjectMapperUtil.map(user,UserDTO.class);
+		UserDetailDTO userDTO = ObjectMapperUtil.map(user,UserDetailDTO.class);
+		
 		return ResponseEntity.ok().body(userDTO);
+	}
+	
+	@GetMapping("/get-all-privileges")
+	@PostAuthorize("hasAuthority('USER_READ_PRIVILEGE')")
+	public ResponseEntity<List<PrivilegeDTO>> getAllPrivileges() {
+		
+		List<PrivilegeDTO> dto = ObjectMapperUtil.mapAll(servicePrivilege.findAll(),PrivilegeDTO.class);
+		
+		return ResponseEntity.ok().body(dto);
+	}
+	
+	@GetMapping("/get-all-roles")
+	@PostAuthorize("hasAuthority('USER_READ_PRIVILEGE')")
+	public ResponseEntity<List<RoleDTO>> getAllRoles() {
+		
+		List<RoleDTO> dto = ObjectMapperUtil.mapAll(serviceRole.findAll(),RoleDTO.class);
+		
+		return ResponseEntity.ok().body(dto);
 	}
 	
 	@PostMapping()
@@ -116,7 +140,7 @@ public class UserResource {
 	@PutMapping("/{id}")
 	@PostAuthorize("hasAuthority('USER_WRITE_PRIVILEGE')")
 	public ResponseEntity<Void> update(@Valid
-									   @RequestBody SignUpDTO dto,
+									   @RequestBody UpdateUserDTO dto,
 									   @PathVariable(value="id") Integer id){
 		
 		User obj = ObjectMapperUtil.map(dto,User.class);
