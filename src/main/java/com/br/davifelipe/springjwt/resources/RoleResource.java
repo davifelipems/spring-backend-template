@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.br.davifelipe.springjwt.dto.RoleDTO;
+import com.br.davifelipe.springjwt.dto.RoleDetailDTO;
 import com.br.davifelipe.springjwt.dto.RoleSaveDto;
 import com.br.davifelipe.springjwt.model.Privilege;
 import com.br.davifelipe.springjwt.model.Role;
@@ -42,6 +43,7 @@ public class RoleResource {
 	PrivilegeService servicePrivilege;
 	
 	@GetMapping(value="/page")
+	@PostAuthorize("hasAuthority('ROLE_READ_PRIVILEGE')")
 	public ResponseEntity<Page<RoleDTO>> findPage(
 			@RequestParam(value="name", defaultValue="") String name, 
 			@RequestParam(value="page", defaultValue="0") Integer page, 
@@ -64,7 +66,7 @@ public class RoleResource {
 	
 	@GetMapping("/{id}")
 	@PostAuthorize("hasAuthority('ROLE_READ_PRIVILEGE')")
-	public ResponseEntity<RoleDTO> findById(@PathVariable(value="id") Integer id) {
+	public ResponseEntity<RoleDetailDTO> findById(@PathVariable(value="id") Integer id) {
 		
 		Role role = serviceRole.findById(id);
 		
@@ -72,7 +74,7 @@ public class RoleResource {
 			throw new ObjectNotFoundException("Object "+Role.class.getName()+" not found! id "+id);
 		}
 		
-		RoleDTO roleDTO = ObjectMapperUtil.map(role,RoleDTO.class);
+		RoleDetailDTO roleDTO = ObjectMapperUtil.map(role,RoleDetailDTO.class);
 		return ResponseEntity.ok().body(roleDTO);
 	}
 	

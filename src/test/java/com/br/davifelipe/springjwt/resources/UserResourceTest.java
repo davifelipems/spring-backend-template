@@ -13,9 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.br.davifelipe.springjwt.dto.SingInDTO;
 import com.br.davifelipe.springjwt.dto.SignUpDTO;
+import com.br.davifelipe.springjwt.dto.SingInDTO;
+import com.br.davifelipe.springjwt.dto.UpdateUserDTO;
 import com.br.davifelipe.springjwt.dto.UserDTO;
+import com.br.davifelipe.springjwt.dto.UserDetailDTO;
 import com.br.davifelipe.springjwt.model.Privilege;
 import com.br.davifelipe.springjwt.model.Role;
 import com.br.davifelipe.springjwt.services.PrivilegeService;
@@ -34,6 +36,8 @@ class UserResourceTest extends AbstractApplicationTest{
 	private BCryptPasswordEncoder encoder;
 	
 	private SignUpDTO signupDTO;
+	
+	private UpdateUserDTO updateUserDTO;
 	
 	private UserDTO userDTO;
 	
@@ -58,9 +62,11 @@ class UserResourceTest extends AbstractApplicationTest{
 		this.singInDTO = ObjectMapperUtil.map(this.userMock,SingInDTO.class);
 		this.signupDTO = ObjectMapperUtil.map(this.userMock,SignUpDTO.class);
 		this.userDTO = ObjectMapperUtil.map(this.userMock,UserDTO.class);
+		this.updateUserDTO = ObjectMapperUtil.map(this.userMock,UpdateUserDTO.class);
 		
 		this.signupDTO.setPassword("123456");
 		this.singInDTO.setPassword("123456");
+		this.updateUserDTO.setPassword("123456");
 	}
 	
 	@Test
@@ -114,6 +120,7 @@ class UserResourceTest extends AbstractApplicationTest{
 		assertThat(this.token).isNotBlank();
 		
 		this.signupDTO.setEmail("test2@test.com");
+		this.updateUserDTO.setEmail(this.signupDTO.getEmail());
 		
 		String userSavedUrl = given()
 								.header("Authorization", this.token)
@@ -127,6 +134,7 @@ class UserResourceTest extends AbstractApplicationTest{
 		String splitedUrl[] = userSavedUrl.split("/");
 		this.userDTO.setId(Integer.parseInt(splitedUrl[splitedUrl.length -1]));
 		this.signupDTO.setId(this.userDTO.getId());
+		this.updateUserDTO.setId(this.userDTO.getId());
 	}
 	
 	@Test
@@ -134,13 +142,13 @@ class UserResourceTest extends AbstractApplicationTest{
 	@Order(5)
 	void foundUser() {
 		
-		UserDTO userDTORetrived =	given()
+		UserDetailDTO userDTORetrived =	given()
 				.header("Authorization", this.token)
 				.contentType("application/json")
 				.port(port)
 				.when().get("/user/"+this.userDTO.getId())
 				.then().statusCode(200)
-				.extract().as(UserDTO.class);
+				.extract().as(UserDetailDTO.class);
 		
 		assertEquals(this.signupDTO.getName(), userDTORetrived.getName());
 	}
@@ -150,11 +158,12 @@ class UserResourceTest extends AbstractApplicationTest{
 	@Order(6)
 	void updateUser() {
 		
-		this.signupDTO.setName("User Updated!");
+		this.updateUserDTO.setName("User Updated!");
+		this.updateUserDTO.setPassword(null);
 		 given()
 		.header("Authorization", this.token)
 		.contentType("application/json")
-		.body(this.signupDTO)
+		.body(this.updateUserDTO)
 		.port(port)
 		.when().put("/user/"+this.userDTO.getId())
 		.then().statusCode(204);
@@ -164,15 +173,15 @@ class UserResourceTest extends AbstractApplicationTest{
 	@DisplayName("User check if it was updated [GET]")
 	@Order(7)
 	void updateCheckUser() {
-		UserDTO userDTORetrived =	given()
+		UserDetailDTO userDTORetrived =	given()
 									.header("Authorization", this.token)
 									.contentType("application/json")
 									.port(port)
 									.when().get("/user/"+this.userDTO.getId())
 									.then().statusCode(200)
-									.extract().as(UserDTO.class);
+									.extract().as(UserDetailDTO.class);
 		
-		assertEquals(this.signupDTO.getName(), userDTORetrived.getName());
+		assertEquals(this.updateUserDTO.getName(), userDTORetrived.getName());
 	}
 	
 	@Test
